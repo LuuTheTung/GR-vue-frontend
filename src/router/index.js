@@ -7,7 +7,6 @@ const TheContainer = () => import('@/containers/TheContainer')
 // Views
 const Dashboard = () => import('@/views/Dashboard')
 
-
 const Charts = () => import('@/views/charts/Charts')
 const Widgets = () => import('@/views/widgets/Widgets')
 
@@ -15,14 +14,10 @@ const Widgets = () => import('@/views/widgets/Widgets')
 const Forms = () => import('@/views/base/Forms')
 const Tables = () => import('@/views/base/Tables')
 
-
-
-
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login')
-const Register = () => import('@/views/pages/Register')
 
 // Users
 const Users = () => import('@/views/users/Users')
@@ -133,11 +128,6 @@ function configRoutes () {
           path: 'login',
           name: 'Login',
           component: Login
-        },
-        {
-          path: 'register',
-          name: 'Register',
-          component: Register
         }
       ]
     }

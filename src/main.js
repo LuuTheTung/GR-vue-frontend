@@ -7,10 +7,17 @@ import { iconsSet as icons } from './assets/icons/icons.js'
 import store from './store'
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
+import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
+import Vuelidate from 'vuelidate'
+
+Vue.component('VueCtkDateTimePicker', VueCtkDateTimePicker);
 Vue.config.performance = true
 Vue.use(CoreuiVue)
 Vue.prototype.$log = console.log.bind(console)
 Vue.use(Vuesax)
+Vue.use(Vuelidate)
+
 new Vue({
   el: '#app',
   router,

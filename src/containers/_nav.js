@@ -42,32 +42,6 @@ export default [
         to: '/charts',
         icon: 'cil-chart-pie'
       },
-
-
-      {
-        _name: 'CSidebarNavDropdown',
-        name: 'Pages',
-        route: '/pages',
-        icon: 'cil-star',
-        items: [
-          {
-            name: 'Login',
-            to: '/pages/login'
-          },
-          {
-            name: 'Register',
-            to: '/pages/register'
-          },
-          {
-            name: 'Error 404',
-            to: '/pages/404'
-          },
-          {
-            name: 'Error 500',
-            to: '/pages/500'
-          }
-        ]
-      },
     ]
   }
 ]

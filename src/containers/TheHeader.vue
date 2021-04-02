@@ -19,34 +19,11 @@
           Dashboard
         </CHeaderNavLink>
       </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/users" exact>
-          Users
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink>
-          Settings
-        </CHeaderNavLink>
-      </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav class="mr-4">
       <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-bell"/>
-        </CHeaderNavLink>
+        <vs-button v-on:click="login()" color="primary" type="filled"><CIcon name="cil-lock-locked"/> Log out</vs-button>
       </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-list"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-envelope-open"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <TheHeaderDropdownAccnt/>
     </CHeaderNav>
     <CSubheader class="px-3">
       <CBreadcrumbRouter class="border-0 mb-0"/>
@@ -55,12 +32,25 @@
 </template>
 
 <script>
-import TheHeaderDropdownAccnt from './TheHeaderDropdownAccnt'
 
-export default {
+export default  {
   name: 'TheHeader',
-  components: {
-    TheHeaderDropdownAccnt
-  }
+  props: [],
+  mounted() {
+
+  },
+  data() {
+    return {
+      username: '',
+      password: ''
+    }
+  },
+  methods: {
+    async login(){
+      localStorage.removeItem('User');
+      await this.$router.push('/pages/login');
+
+    }
+  },
 }
 </script>

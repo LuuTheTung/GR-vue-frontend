@@ -542,6 +542,11 @@ export default {
       }
       return $color
     }
+  },
+  mounted() {
+    if(!localStorage.getItem('User')){
+      this.$router.push('/pages/login');
+    }
   }
 }
 </script>
