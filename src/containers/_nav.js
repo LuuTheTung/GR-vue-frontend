@@ -32,6 +32,10 @@ export default [
             name: 'Tables',
             to: '/base/tables'
           },
+          {
+            name: 'Category',
+            to: '/base/category'
+          },
 
         ]
       },

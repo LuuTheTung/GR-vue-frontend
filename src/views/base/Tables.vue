@@ -1,8 +1,8 @@
 <template lang="html">
   <section class="home">
     <div class="center">
-      <vs-button @click="active=!active">
-        Create
+      <vs-button v-on:click="onCreateUser()">
+        Create Account
       </vs-button>
       <vs-dialog prevent-close width="700px" v-model="active">
         <template #header>
@@ -10,8 +10,6 @@
             Create <b>User/Admin</b>
           </h4>
         </template>
-
-
         <div class="con-form">
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin"> Company branch:</vs-col>
@@ -30,26 +28,26 @@
 
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin"> Given Name:
-              <vs-input v-model="given_name" placeholder="Enter given name" />
+              <vs-input v-model="given_name" placeholder="Enter given name" required/>
             </vs-col>
             <vs-col vs-type="flex" w="6" class="label-margin"> Family Name:
-              <vs-input v-model="family_name" placeholder="Enter family name" />
+              <vs-input v-model="family_name" placeholder="Enter family name" required/>
             </vs-col>
           </vs-row>
 
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.email.$error }"> Email:
-              <vs-input v-model="$v.email.$model" placeholder="Enter email"/>
+              <vs-input v-model="$v.email.$model" placeholder="Enter email" required/>
               <div  v-if="!$v.email.email">Email invalid</div>
             </vs-col>
             <vs-col vs-type="flex" w="6" class="label-margin"> Password:
-              <vs-input type="password"  v-model="password" placeholder="Enter password"></vs-input>
+              <vs-input type="password"  v-model="password" placeholder="Enter password" required></vs-input>
             </vs-col>
           </vs-row>
 
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.phone_number.$error }"> Phone number:
-              <vs-input v-model="$v.phone_number.$model" placeholder="Enter phone number" />
+              <vs-input v-model="$v.phone_number.$model" placeholder="Enter phone number" required/>
               <div v-if="!$v.phone_number.numeric">Phone number invalid</div>
             </vs-col>
             <vs-col vs-type="flex" w="6" class="label-margin"> Address:
@@ -71,7 +69,7 @@
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin"> Work from:</vs-col>
             <vs-col vs-type="flex" w="8">
-              <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'"></VueCtkDateTimePicker>
+              <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'" required></VueCtkDateTimePicker>
             </vs-col>
           </vs-row>
 
@@ -96,7 +94,7 @@
 
         <template #footer>
           <div class="footer-dialog">
-            <vs-button v-on:click="onSave()" block>
+            <vs-button v-on:click="onSave(user_id)" block>
               Create
             </vs-button>
           </div>
@@ -170,7 +168,8 @@ export default  {
       start_work_date: '',
       end_work_date: '',
       user_flg: 1,
-      userIdDialog: ''
+      userIdDialog: '',
+      user_id: ''
     }
   },
   methods: {
@@ -185,9 +184,25 @@ export default  {
             return Promise.reject(message);
           });
     },
+    onCreateUser(){
+      this.active = true;
+      this.mst_company_id = 1;
+      this.family_name = '';
+      this.given_name = '';
+      this.email = '';
+      this.password = '';
+      this.phone_number = '';
+      this.family_name = '';
+      this.address = '';
+      this.state_flg = 0;
+      this.start_work_date = '';
+      this.end_work_date = '';
+      this.user_flg = 1;
+    },
     async onEdit(tr) {
       this.active = true;
       if (tr.id){
+        this.user_id = tr.id ;
         let userDetail = await Axios.get(`http://localhost:8000/api/customers/${tr.id}`)
             .then(response => {
               return Promise.resolve(response.data);
@@ -197,7 +212,6 @@ export default  {
               const message = (error && error.data && error.data.message) || error.statusText;
               return Promise.reject(message);
             });
-        console.log(userDetail)
         this.mst_company_id = userDetail['mst_company_id'];
         this.family_name = userDetail['family_name'];
         this.given_name = userDetail['given_name'];
@@ -212,7 +226,8 @@ export default  {
         this.user_flg = userDetail['user_flg'];
       }
     },
-    async onSave(){
+    async onSave(id){
+
       let data = {
         mst_company_id: this.mst_company_id,
         family_name : this.family_name,
@@ -227,49 +242,81 @@ export default  {
         user_flg: this.user_flg,
         create_user: localStorage.getItem('User')
       }
-      // this.$validator.validateAll().then(async valid => {
-      //   if(valid){
-      //     // if(id){
-      //     //   data.id = id;
-      //     //   // await this.updateWorkDetailByTimecard(data);
-      //     //   console.log('ok')
-      //     //   this.active = false;
-      //     // }else{
-      //     //   await Axios.post(`http://localhost:8000/api/timecard-detail`, data)
-      //     //       .then(response => {
-      //     //         return Promise.resolve(response.data);
-      //     //       })
-      //     //       .catch(error => {
-      //     //         error = error.response;
-      //     //         const message = (error && error.data && error.data.message) || error.statusText;
-      //     //         return Promise.reject(message);
-      //     //       });
-      //     //   this.active = false;
-      //     // }
-      //     await Axios.post(`http://localhost:8000/api/customers`, data)
-      //         .then(response => {
-      //           return Promise.resolve(response.data);
-      //         })
-      //         .catch(error => {
-      //           error = error.response;
-      //           const message = (error && error.data && error.data.message) || error.statusText;
-      //           return Promise.reject(message);
-      //         });
-      //     this.active = false;
-      //     // recall api after update
-      //     await this.getWorkListDetail();
-      //   }
-      // });
-      console.log(data);
-      await Axios.post(`http://localhost:8000/api/customers`, data)
-          .then(response => {
-            return Promise.resolve(response.data);
+      if (id){
+        data.id = id;
+        this.updateStatus = await Axios.put(`http://localhost:8000/api/customers/${data.id}`, data)
+            .then(response => {
+              return Promise.resolve(response.status);
+            })
+            .catch(error => {
+              error = error.response;
+              const message = (error && error.data && error.data.message) || error.statusText;
+              return Promise.reject(message);
+            });
+        if (this.updateStatus == 200){
+          if (this.user_flg == 0){
+            this.$vs.notification({
+              title:'Update Admin success',
+              progress: 'auto',
+              color:'success',
+              square: true,
+            });
+          }
+          else {
+            this.$vs.notification({
+              title:'Update User Success',
+              progress: 'auto',
+              color:'success',
+              square: true,
+            });
+          }
+        }
+        else {
+          this.$vs.notification({
+            title:'Update User/Admin False',
+            square: true,
+            color:'danger',
+            progress: 'auto',
           })
-          .catch(error => {
-            error = error.response;
-            const message = (error && error.data && error.data.message) || error.statusText;
-            return Promise.reject(message);
-          });
+        }
+      }
+      else {
+        this.createStatus = await Axios.post(`http://localhost:8000/api/customers`, data)
+            .then(response => {
+              return Promise.resolve(response.status);
+            })
+            .catch(error => {
+              error = error.response;
+              const message = (error && error.data && error.data.message) || error.statusText;
+              return Promise.reject(message);
+            });
+        if (this.createStatus == 200){
+          if (this.user_flg == 0){
+            this.$vs.notification({
+              title:'Create Admin success',
+              progress: 'auto',
+              color:'success',
+              square: true,
+            });
+          }
+          else {
+            this.$vs.notification({
+              title:'Create User Success',
+              progress: 'auto',
+              color:'success',
+              square: true,
+            });
+          }
+        }
+        else {
+          this.$vs.notification({
+            title:'Create User/Admin False',
+            square: true,
+            color:'danger',
+            progress: 'auto',
+          })
+        }
+      }
       this.active = false;
       await this.getListCus();
     },

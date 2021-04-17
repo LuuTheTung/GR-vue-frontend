@@ -13,7 +13,7 @@ const Widgets = () => import('@/views/widgets/Widgets')
 // Views - Components
 const Forms = () => import('@/views/base/Forms')
 const Tables = () => import('@/views/base/Tables')
-
+const Category = () => import('@/views/base/category')
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
@@ -100,6 +100,11 @@ function configRoutes () {
               path: 'tables',
               name: 'Tables',
               component: Tables
+            },
+            {
+              path: 'category',
+              name: 'Category',
+              component: Category
             },
           ]
         },
