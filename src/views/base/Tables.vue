@@ -28,26 +28,26 @@
 
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin"> Given Name:
-              <vs-input v-model="given_name" placeholder="Enter given name" required/>
+              <vs-input v-model="given_name" placeholder="Enter given name" />
             </vs-col>
             <vs-col vs-type="flex" w="6" class="label-margin"> Family Name:
-              <vs-input v-model="family_name" placeholder="Enter family name" required/>
+              <vs-input v-model="family_name" placeholder="Enter family name" />
             </vs-col>
           </vs-row>
 
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.email.$error }"> Email:
-              <vs-input v-model="$v.email.$model" placeholder="Enter email" required/>
+              <vs-input v-model="$v.email.$model" placeholder="Enter email" />
               <div  v-if="!$v.email.email">Email invalid</div>
             </vs-col>
             <vs-col vs-type="flex" w="6" class="label-margin"> Password:
-              <vs-input type="password"  v-model="password" placeholder="Enter password" required></vs-input>
+              <vs-input type="password"  v-model="password" placeholder="Enter password" ></vs-input>
             </vs-col>
           </vs-row>
 
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.phone_number.$error }"> Phone number:
-              <vs-input v-model="$v.phone_number.$model" placeholder="Enter phone number" required/>
+              <vs-input v-model="$v.phone_number.$model" placeholder="Enter phone number" />
               <div v-if="!$v.phone_number.numeric">Phone number invalid</div>
             </vs-col>
             <vs-col vs-type="flex" w="6" class="label-margin"> Address:
@@ -101,7 +101,7 @@
         </template>
       </vs-dialog>
     </div>
-    <vs-table striped>
+    <vs-table >
       <template #thead>
         <vs-tr>
           <vs-th style="width: 200px">Company Branch</vs-th>
@@ -342,7 +342,8 @@ export default  {
   },
   validations: {
     email: {
-      email
+      email,
+      required
     },
     phone_number: {
       numeric
@@ -358,7 +359,9 @@ export default  {
 .label-margin{
   margin-bottom: 10px;
 }
-
+.home{
+  margin-left: 60px;
+}
 .error{
   color: red;
   animation-name: shakeError;

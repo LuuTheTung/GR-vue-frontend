@@ -36,6 +36,11 @@ export default [
             name: 'Category',
             to: '/base/category'
           },
+          {
+            name: 'Catalog',
+            to: '/base/catalog'
+          },
+
 
         ]
       },

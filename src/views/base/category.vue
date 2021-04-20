@@ -37,9 +37,23 @@
               <vs-input v-model="price" placeholder="Enter price" />
             </vs-col>
           </vs-row>
+
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="12" class="label-margin"> Sale off:
               <vs-input v-model="sale_off" placeholder="Enter category name" />
+            </vs-col>
+          </vs-row>
+
+          <vs-row class="form-margin">
+            <vs-col vs-type="flex" w="12" class="label-margin"> Image:
+              <div v-if="!image">
+                <input type="file" @change="onFileChange">
+<!--                <input type="file" id="myFile" name="filename">-->
+              </div>
+              <div v-else>
+                <img :src="image" />
+              </div>
+<!--              <input type="file" id="myFile" name="filename">-->
             </vs-col>
           </vs-row>
         </div>
@@ -106,10 +120,28 @@ export default  {
       sale_off: '',
       create_at: '',
       create_user: '',
-      category_id: ''
+      category_id: '',
+      image: '',
+      image_dir: '',
     }
   },
   methods: {
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.image_dir = files[0].name;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = (e) => {
+        vm.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
     async getListCategory() {
       this.listSave = await Axios.get(`http://localhost:8000/api/category/`)
           .then(response => {
@@ -128,6 +160,8 @@ export default  {
       this.type = 0;
       this.price = '';
       this.sale_off = '';
+      this.image = '';
+      this.image_dir = '';
     },
     async onEdit(tr) {
       this.active = true;
@@ -146,6 +180,7 @@ export default  {
         this.category_name = categoryDetail['category_name'];
         this.price = categoryDetail['price'];
         this.sale_off = categoryDetail['sale_off'];
+        this.image_dir = categoryDetail['src'];
       }
     },
 
@@ -155,8 +190,10 @@ export default  {
         category_name: this.category_name,
         price: this.price,
         sale_off: this.sale_off,
-        create_user: localStorage.getItem('User')
+        create_user: localStorage.getItem('User'),
+        src: this.image_dir,
       }
+
       if(id){
         data.id = id;
         this.updateStatus = await Axios.put(`http://localhost:8000/api/category/${data.id}`, data)
@@ -188,7 +225,7 @@ export default  {
       else{
          this.createStatus = await Axios.post(`http://localhost:8000/api/category`, data)
             .then(response => {
-              return Promise.resolve(response.data);
+              return Promise.resolve(response.status);
             })
             .catch(error => {
               error = error.response;
@@ -233,12 +270,13 @@ export default  {
 .label-margin{
   margin-bottom: 10px;
 }
-
-.error{
-  color: red;
-  animation-name: shakeError;
-  animation-fill-mode: forwards;
-  animation-duration: .6s;
-  animation-timing-function: ease-in-out;
+.home{
+  margin-left: 60px;
+}
+img {
+  width: 30%;
+  margin: auto;
+  display: block;
+  margin-bottom: 10px;
 }
 </style>

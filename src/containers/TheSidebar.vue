@@ -1,48 +1,79 @@
 <template>
-  <CSidebar 
-    fixed 
-    :minimize="minimize"
-    :show="show"
-    @update:show="(value) => $store.commit('set', ['sidebarShow', value])"
-  >
-    <CSidebarBrand class="d-md-down-none" to="/">
-      <CIcon 
-        class="c-sidebar-brand-full" 
-        name="logo" 
-        size="custom-size" 
-        :height="35" 
-        viewBox="0 0 556 134"
-      />
-      <CIcon 
-        class="c-sidebar-brand-minimized" 
-        name="logo" 
-        size="custom-size" 
-        :height="35" 
-        viewBox="0 0 110 134"
-      />
-    </CSidebarBrand>
+  <div class="hidden">
+    <vs-sidebar
+        absolute
+        hover-expand
+        reduce
+        v-model="active"
+        open
+    >
+      <template #logo>
+        <img src="/img/logo.jpg" alt="">
+      </template>
+      <vs-sidebar-item  id="dashboard">
+        <template #icon>
+          <i class="fa fa-bar-chart" aria-hidden="true"></i>
+        </template>
+        <div v-on:click="goToDashboard()"> Dashboard</div>
+      </vs-sidebar-item>
+      <vs-sidebar-item id="user">
+        <template #icon>
+          <i class="fa fa-users" aria-hidden="true"></i>
+        </template>
+        <div v-on:click="goToUserAdmin()"> Manage User/Admin</div>
+      </vs-sidebar-item>
+      <vs-sidebar-item id="category">
+        <template #icon>
+          <i class="fa fa-th-list" aria-hidden="true"></i>
+        </template>
+        <div v-on:click="goToCategory()"> Category</div>
+      </vs-sidebar-item>
+      <vs-sidebar-item id="catalog">
+        <template #icon>
+          <i class="fa fa-camera-retro"></i>
+        </template>
+        <div v-on:click="goToCatalog()"> Catalog</div>
+      </vs-sidebar-item>
 
-    <CRenderFunction flat :content-to-render="$options.nav"/>
-    <CSidebarMinimizer
-      class="d-md-down-none"
-      @click.native="$store.commit('set', ['sidebarMinimize', !minimize])"
-    />
-  </CSidebar>
+      <template #footer>
+        <vs-sidebar-item id="log" >
+          <template #icon>
+            <i class="fa fa-sign-out" aria-hidden="true"></i>
+          </template>
+          <div v-on:click="logOut()"> Log out</div>
+        </vs-sidebar-item>
+      </template>
+    </vs-sidebar>
+  </div>
 </template>
-
 <script>
-import nav from './_nav'
 
 export default {
   name: 'TheSidebar',
-  nav,
-  computed: {
-    show () {
-      return this.$store.state.sidebarShow 
+  data:() => ({
+    active: 'dashboard',
+  })
+  ,mounted() {
+
+  },
+  methods: {
+    async goToDashboard(){
+      await this.$router.push('/dashboard');
     },
-    minimize () {
-      return this.$store.state.sidebarMinimize 
+    async goToUserAdmin(){
+      await this.$router.push('/base/tables');
+    },
+    async goToCategory(){
+      await this.$router.push('/base/category');
+    },
+    async goToCatalog(){
+      await this.$router.push('/base/catalog');
+    },
+    async logOut(){
+      localStorage.removeItem('User');
+      await this.$router.push('/pages/login');
     }
-  }
+  },
 }
 </script>
+

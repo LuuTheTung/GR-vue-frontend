@@ -15,9 +15,7 @@
     </CHeaderBrand>
     <CHeaderNav class="d-md-down-none mr-auto">
       <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/dashboard">
-          Dashboard
-        </CHeaderNavLink>
+
       </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav class="mr-4">
@@ -25,9 +23,6 @@
         <vs-button v-on:click="login()" color="primary" type="filled"><CIcon name="cil-lock-locked"/> Log out</vs-button>
       </CHeaderNavItem>
     </CHeaderNav>
-    <CSubheader class="px-3">
-      <CBreadcrumbRouter class="border-0 mb-0"/>
-    </CSubheader>
   </CHeader>
 </template>
 

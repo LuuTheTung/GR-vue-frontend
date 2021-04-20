@@ -18,6 +18,8 @@ Vue.prototype.$log = console.log.bind(console)
 Vue.use(Vuesax)
 Vue.use(Vuelidate)
 
+require('../public/font-awesome-4.7.0/css/font-awesome.css');
+
 new Vue({
   el: '#app',
   router,

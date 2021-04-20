@@ -14,6 +14,8 @@ const Widgets = () => import('@/views/widgets/Widgets')
 const Forms = () => import('@/views/base/Forms')
 const Tables = () => import('@/views/base/Tables')
 const Category = () => import('@/views/base/category')
+const Catalog = () => import('@/views/base/Catalog')
+
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
@@ -106,6 +108,12 @@ function configRoutes () {
               name: 'Category',
               component: Category
             },
+            {
+              path: 'catalog',
+              name: 'Catalog',
+              component: Catalog
+            },
+
           ]
         },
 
