@@ -14,25 +14,25 @@
         <template #icon>
           <i class="fa fa-bar-chart" aria-hidden="true"></i>
         </template>
-        <div v-on:click="goToDashboard()"> Dashboard</div>
+        <router-link :to="{ path: '/dashboard' }">Dashboard</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="user">
         <template #icon>
           <i class="fa fa-users" aria-hidden="true"></i>
         </template>
-        <div v-on:click="goToUserAdmin()"> Manage User/Admin</div>
+        <router-link :to="{ path: '/base/tables' }">Manage User/Admin</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="category">
         <template #icon>
           <i class="fa fa-th-list" aria-hidden="true"></i>
         </template>
-        <div v-on:click="goToCategory()"> Category</div>
+        <router-link :to="{ path: '/base/category' }">Category</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="catalog">
         <template #icon>
           <i class="fa fa-camera-retro"></i>
         </template>
-        <div v-on:click="goToCatalog()"> Catalog</div>
+        <router-link :to="{ path: '/base/catalog' }">Catalog</router-link>
       </vs-sidebar-item>
 
       <template #footer>
@@ -54,24 +54,20 @@ export default {
     active: 'dashboard',
   })
   ,mounted() {
-
+    this.getURL();
   },
   methods: {
-    async goToDashboard(){
-      await this.$router.push('/dashboard');
-    },
-    async goToUserAdmin(){
-      await this.$router.push('/base/tables');
-    },
-    async goToCategory(){
-      await this.$router.push('/base/category');
-    },
-    async goToCatalog(){
-      await this.$router.push('/base/catalog');
-    },
     async logOut(){
       localStorage.removeItem('User');
       await this.$router.push('/pages/login');
+    },
+    getURL(){
+      var currentPath = this.$route.path;
+      console.log(currentPath);
+      if (currentPath == '/dashboard') this.active = 'dashboard'
+      else if (currentPath == '/base/tables') this.active = 'user'
+      else if (currentPath == '/base/category') this.active = 'category'
+      else if (currentPath == '/base/catalog') this.active = 'catalog'
     }
   },
 }

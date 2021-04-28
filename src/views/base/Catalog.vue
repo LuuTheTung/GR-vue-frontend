@@ -1,9 +1,9 @@
 <template>
   <section class="home">
     <div>
-      <h4>Cake:</h4>
+      <h4><i class="fa fa-birthday-cake" aria-hidden="true"></i> Cake:</h4>
       <vs-card-group>
-        <vs-card :key="i" v-for="(card,i) in listSave" >
+        <vs-card :key="i" v-for="(card,i) in listCake" >
           <template #title>
             <h3>{{card.category_name}}</h3>
           </template>
@@ -12,16 +12,17 @@
           </template>
           <template #text>
             <p>
-              {{card.price}}Đ
+              {{card.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}
             </p>
           </template>
         </vs-card>
       </vs-card-group>
     </div>
     <div>
-      <h4>Drink:</h4>
+      <div></div>
+      <h4 style="margin-top: 30px;"><i class="fa fa-coffee" aria-hidden="true"></i> Drink:</h4>
       <vs-card-group>
-        <vs-card :key="i" v-for="(card,i) in listSave" >
+        <vs-card :key="i" v-for="(card,i) in listDrink" >
           <template #title>
             <h3>{{card.category_name}}</h3>
           </template>
@@ -30,7 +31,7 @@
           </template>
           <template #text>
             <p>
-              {{card.price}}Đ
+              {{card.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}
             </p>
           </template>
         </vs-card>
@@ -51,6 +52,8 @@ name: "Catalog",
     return {
       card: [],
       listSave: [],
+      listCake:[],
+      listDrink:[],
     }
   },
   methods: {
@@ -65,6 +68,13 @@ name: "Catalog",
             return Promise.reject(message);
           });
       console.log(this.listSave);
+      for (var j = 0; j < this.listSave.length; j++) {
+        if(this.listSave[j].type == 1){
+          this.listCake.push(this.listSave[j]);
+        }
+        else this.listDrink.push(this.listSave[j]);
+      }
+
     }
   },
   mounted() {
@@ -77,5 +87,8 @@ name: "Catalog",
 <style scoped>
 .home{
   margin-left: 60px;
+}
+h4{
+  font: 700 2em/1em 'Libre Caslon Text', Georgia, Times New Roman, serif;
 }
 </style>

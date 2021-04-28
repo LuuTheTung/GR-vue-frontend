@@ -6,8 +6,11 @@
       </vs-button>
       <vs-dialog prevent-close width="500px" v-model="active">
         <template #header>
-          <h4 class="not-margin">
+          <h4 class="not-margin" v-if="!category_id">
             Create <b>Category</b>
+          </h4>
+          <h4 class="not-margin" v-if="category_id">
+            Edit <b>Category</b>
           </h4>
         </template>
 
@@ -48,20 +51,24 @@
             <vs-col vs-type="flex" w="12" class="label-margin"> Image:
               <div v-if="!image">
                 <input type="file" @change="onFileChange">
-<!--                <input type="file" id="myFile" name="filename">-->
               </div>
               <div v-else>
                 <img :src="image" />
               </div>
-<!--              <input type="file" id="myFile" name="filename">-->
+
             </vs-col>
           </vs-row>
         </div>
 
         <template #footer>
           <div class="footer-dialog">
-            <vs-button v-on:click="onSave(category_id)" block>
+            <vs-button v-on:click="onSave(category_id)" block v-if="!category_id">
               Create
+            </vs-button>
+          </div>
+          <div class="footer-dialog">
+            <vs-button v-on:click="onSave(category_id)" block v-if="category_id">
+              Update
             </vs-button>
           </div>
         </template>
@@ -81,8 +88,8 @@
       <template #tbody>
         <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(listSave, page, max)" :data="tr"  >
           <vs-td>{{ tr.category_name }}</vs-td>
-          <vs-td>{{ tr.price }}</vs-td>
-          <vs-td>{{ tr.sale_off }}</vs-td>
+          <vs-td>{{ tr.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
+          <vs-td>{{ tr.sale_off }}%</vs-td>
           <vs-td>{{ tr.create_at }}</vs-td>
           <vs-td>{{ tr.create_user }}</vs-td>
           <vs-td  @click="onEdit(tr)">

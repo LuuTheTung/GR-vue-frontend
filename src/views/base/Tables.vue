@@ -6,8 +6,11 @@
       </vs-button>
       <vs-dialog prevent-close width="700px" v-model="active">
         <template #header>
-          <h4 class="not-margin">
+          <h4 class="not-margin" v-if="!user_id">
             Create <b>User/Admin</b>
+          </h4>
+          <h4 class="not-margin" v-if="user_id">
+            Edit <b>User/Admin</b>
           </h4>
         </template>
         <div class="con-form">
@@ -61,7 +64,10 @@
               <vs-radio v-model="state_flg" val="0">
                 Working
               </vs-radio>
-              <vs-radio disabled v-model="state_flg" val="1">
+              <vs-radio disabled v-model="state_flg" val="1" v-if="!user_id">
+                Rejected
+              </vs-radio>
+            <vs-radio v-model="state_flg" val="1" v-if="user_id">
                 Rejected
               </vs-radio>
           </vs-row>
@@ -76,7 +82,8 @@
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="6" class="label-margin"> Reject from:</vs-col>
             <vs-col vs-type="flex" w="8">
-              <VueCtkDateTimePicker id="end_work_date" disabled v-model="end_work_date"></VueCtkDateTimePicker>
+              <VueCtkDateTimePicker disabled v-model="end_work_date" v-if="!user_id"></VueCtkDateTimePicker>
+              <VueCtkDateTimePicker v-model="end_work_date" v-if="user_id" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'"></VueCtkDateTimePicker>
             </vs-col>
           </vs-row>
 
@@ -94,8 +101,11 @@
 
         <template #footer>
           <div class="footer-dialog">
-            <vs-button v-on:click="onSave(user_id)" block>
+            <vs-button v-on:click="onSave(user_id)" block v-if="!user_id">
               Create
+            </vs-button>
+            <vs-button v-on:click="onSave(user_id)" block v-if="user_id">
+              Update
             </vs-button>
           </div>
         </template>
@@ -238,7 +248,7 @@ export default  {
         address: this.address,
         state_flg: this.state_flg,
         start_work_date: this.start_work_date,
-        end_work_date: '',
+        end_work_date: this.end_work_date,
         user_flg: this.user_flg,
         create_user: localStorage.getItem('User')
       }
