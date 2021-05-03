@@ -34,6 +34,12 @@
         </template>
         <router-link :to="{ path: '/base/catalog' }">Catalog</router-link>
       </vs-sidebar-item>
+      <vs-sidebar-item id="bill">
+        <template #icon>
+          <i class="fa fa-print"></i>
+        </template>
+        <router-link :to="{ path: '/base/bill' }">Invoice</router-link>
+      </vs-sidebar-item>
 
       <template #footer>
         <vs-sidebar-item id="log" >
@@ -68,6 +74,7 @@ export default {
       else if (currentPath == '/base/tables') this.active = 'user'
       else if (currentPath == '/base/category') this.active = 'category'
       else if (currentPath == '/base/catalog') this.active = 'catalog'
+      else if (currentPath == '/base/bill') this.active = 'bill'
     }
   },
 }

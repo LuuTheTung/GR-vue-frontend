@@ -78,7 +78,7 @@
       <template #thead>
         <vs-tr>
           <vs-th style="width: 200px">Category name</vs-th>
-          <vs-th >Price</vs-th>
+          <vs-th sort-key="price">Price</vs-th>
           <vs-th >Sale Off</vs-th>
           <vs-th >Create Date</vs-th>
           <vs-th >Create User</vs-th>

@@ -15,6 +15,7 @@ const Forms = () => import('@/views/base/Forms')
 const Tables = () => import('@/views/base/Tables')
 const Category = () => import('@/views/base/category')
 const Catalog = () => import('@/views/base/Catalog')
+const Bill = () => import('@/views/base/Bill')
 
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
@@ -112,6 +113,11 @@ function configRoutes () {
               path: 'catalog',
               name: 'Catalog',
               component: Catalog
+            },
+            {
+              path: 'bill',
+              name: 'Bill',
+              component: Bill
             },
 
           ]
