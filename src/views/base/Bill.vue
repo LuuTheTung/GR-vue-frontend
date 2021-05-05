@@ -17,7 +17,6 @@
           <template #thead>
             <vs-tr>
               <vs-th >Invoice ID</vs-th>
-              <vs-th >Category ID</vs-th>
               <vs-th >Category name</vs-th>
               <vs-th >Price</vs-th>
               <vs-th >Quantity</vs-th>
@@ -27,11 +26,10 @@
           <template #tbody>
             <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(userDetail, page, max)" :data="tr"  >
               <vs-td>{{ tr.invoice_id }}</vs-td>
-              <vs-td>{{ tr.category_id }}</vs-td>
               <vs-td>{{ tr.category_name }}</vs-td>
               <vs-td>{{ tr.price }}</vs-td>
               <vs-td>{{ tr.quantity }}</vs-td>
-              <vs-td  @click="popList(tr)" v-if="!user_id">
+              <vs-td  @click="popList(i)" v-if="!user_id">
                 <vs-button >
                   Delete
                 </vs-button></vs-td>
@@ -47,7 +45,8 @@
               <vs-select filter v-model="category_name"  @change="onChange(category_name)">
                 <vs-option :key="index"
                            :value="item.category_name"
-                           :label="item.category_name" v-for="(item,index) in listCategory"
+                           :label="item.category_name"
+                           v-for="(item,index) in listCategory"
                 >
                   {{item.category_name}}
                 </vs-option>
@@ -63,7 +62,8 @@
 
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="12" class="label-margin"> Quantity:
-              <vs-input type="number" v-model="quantity" min="1"/>
+              <vs-input type="number" v-model="quantity"/>
+
             </vs-col>
           </vs-row>
 
@@ -130,7 +130,7 @@ export default  {
       //create
       category_name: '',
       price: '',
-      quantity: 0
+      quantity: 1
     }
   },
   methods: {
@@ -168,24 +168,48 @@ export default  {
             return Promise.reject(message);
           });
       this.price = categoryDetail['price'];
+      this.quantity = 1;
     },
     addToList(){
-      this.userDetail.push({
-        category_name: this.category_name,
-        price: this.price,
-        quantity: this.quantity
-      });
-
+      if (this.userDetail.length > 0){
+        console.log(this.category_name);
+        var exist = false;
+        var id = 0;
+        for (var j = 0; j < this.userDetail.length; j++) {
+          if (this.userDetail[j].category_name === this.category_name){
+            exist = true;
+            id = j;
+          }
+        }
+        if (exist === true){
+          this.userDetail[id].quantity = parseFloat(this.userDetail[id].quantity) + parseFloat(this.quantity);
+        }
+        else {
+          this.userDetail.push({
+            category_name: this.category_name,
+            price: this.price,
+            quantity: this.quantity
+          });
+        }
+      }
+      else {
+        this.userDetail.push({
+          category_name: this.category_name,
+          price: this.price,
+          quantity: this.quantity
+        });
+      }
+      console.log(this.userDetail);
     },
-    popList(){
-      this.userDetail.pop();
+    popList(index){
+      this.userDetail.splice(index, 1);
     },
     onCreateUser(){
       this.active = true;
       this.user_id = '';
       this.category_name = '';
       this.price = '';
-      this.quantity = 0;
+      this.quantity = 1;
       this.userDetail = [];
     },
     async onEdit(tr) {
@@ -205,14 +229,8 @@ export default  {
       }
     },
     async onSave() {
-      let data = {
-        category_name: this.category_name,
-        price: this.price,
-        quantity: this.quantity,
-        create_user: localStorage.getItem('User')
-      }
-
-      this.createStatus = await Axios.post(`http://localhost:8000/api/customers`, data)
+      let data = this.userDetail;
+      this.createStatus = await Axios.post(`http://localhost:8000/api/invoice`, data)
           .then(response => {
             return Promise.resolve(response.status);
           })
@@ -231,11 +249,6 @@ export default  {
 
   },
   watch:{
-    category_name: async function(val) {
-      if (val) {
-
-      }
-    },
 
   },
   mounted() {
