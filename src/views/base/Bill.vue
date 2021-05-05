@@ -41,6 +41,13 @@
         </vs-table>
         <div class="con-form" v-if="!user_id">
           <vs-row class="form-margin">
+            <vs-col vs-type="flex" w="12" class="label-margin"> Total price: {{ this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}
+            </vs-col>
+          </vs-row>
+
+        </div>
+        <div class="con-form" v-if="!user_id">
+          <vs-row class="form-margin">
             <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12"> Category Name:
               <vs-select filter v-model="category_name"  @change="onChange(category_name)">
                 <vs-option :key="index"
@@ -95,7 +102,7 @@
         <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(listSave, page, max)" :data="tr"  >
           <vs-td>{{ tr.invoice_id }}</vs-td>
           <vs-td>{{ tr.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
-          <vs-td>{{ tr.created_date }}</vs-td>
+          <vs-td>{{ tr.create_at }}</vs-td>
           <vs-td  @click="onEdit(tr)">
             <vs-button >
               Edit
@@ -130,7 +137,10 @@ export default  {
       //create
       category_name: '',
       price: '',
-      quantity: 1
+      quantity: 1,
+      category_id: '',
+      total_price: 0,
+      total_quantity: 0,
     }
   },
   methods: {
@@ -169,6 +179,7 @@ export default  {
           });
       this.price = categoryDetail['price'];
       this.quantity = 1;
+      this.category_id = categoryDetail['id'];
     },
     addToList(){
       if (this.userDetail.length > 0){
@@ -183,26 +194,33 @@ export default  {
         }
         if (exist === true){
           this.userDetail[id].quantity = parseFloat(this.userDetail[id].quantity) + parseFloat(this.quantity);
+          this.total_price = parseFloat(this.userDetail[id].price)*this.quantity + this.total_price;
         }
         else {
           this.userDetail.push({
             category_name: this.category_name,
             price: this.price,
-            quantity: this.quantity
+            quantity: this.quantity,
+            category_id: this.category_id,
           });
+          this.total_price = parseFloat(this.price)*this.quantity + this.total_price;
         }
       }
       else {
         this.userDetail.push({
           category_name: this.category_name,
           price: this.price,
-          quantity: this.quantity
+          quantity: this.quantity,
+          category_id: this.category_id,
         });
+        this.total_price = parseFloat(this.price) * parseFloat(this.quantity);
+
       }
       console.log(this.userDetail);
     },
     popList(index){
       this.userDetail.splice(index, 1);
+      this.total_price = this.total_price - parseFloat(this.userDetail[index].price)*this.userDetail[index].quantity;
     },
     onCreateUser(){
       this.active = true;
@@ -210,7 +228,10 @@ export default  {
       this.category_name = '';
       this.price = '';
       this.quantity = 1;
+      this.category_id = '';
       this.userDetail = [];
+      this.total_price = 0;
+      this.total_quantity = 0;
     },
     async onEdit(tr) {
       this.active = true;
