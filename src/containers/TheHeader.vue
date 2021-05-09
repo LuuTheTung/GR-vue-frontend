@@ -19,32 +19,31 @@
       </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav class="mr-4">
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <vs-button v-on:click="login()" color="primary" type="filled"><CIcon name="cil-lock-locked"/> Log out</vs-button>
-      </CHeaderNavItem>
+      <TheHeaderDropdownAccnt/>
     </CHeaderNav>
   </CHeader>
 </template>
 
 <script>
-
+import TheHeaderDropdownAccnt from './TheHeaderDropdownAccnt'
 export default  {
   name: 'TheHeader',
+  components: {
+    TheHeaderDropdownAccnt
+  },
   props: [],
   mounted() {
 
   },
   data() {
     return {
-      username: '',
-      password: ''
+      create_user: localStorage.getItem('User'),
     }
   },
   methods: {
     async login(){
       localStorage.removeItem('User');
       await this.$router.push('/pages/login');
-
     }
   },
 }

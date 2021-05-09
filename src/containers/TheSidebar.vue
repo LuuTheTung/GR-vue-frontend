@@ -16,13 +16,13 @@
         </template>
         <router-link :to="{ path: '/dashboard' }">Dashboard</router-link>
       </vs-sidebar-item>
-      <vs-sidebar-item id="user">
+      <vs-sidebar-item id="user" v-if="this.role == 0">
         <template #icon>
           <i class="fa fa-users" aria-hidden="true"></i>
         </template>
         <router-link :to="{ path: '/base/tables' }">Manage User/Admin</router-link>
       </vs-sidebar-item>
-      <vs-sidebar-item id="category">
+      <vs-sidebar-item id="category" v-if="this.role == 0">
         <template #icon>
           <i class="fa fa-th-list" aria-hidden="true"></i>
         </template>
@@ -58,8 +58,10 @@ export default {
   name: 'TheSidebar',
   data:() => ({
     active: 'dashboard',
-  })
-  ,mounted() {
+    role: localStorage.getItem('role'),
+  }),
+  mounted() {
+    console.log(this.role);
     this.getURL();
   },
   methods: {

@@ -70,7 +70,6 @@
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="12" class="label-margin"> Quantity:
               <vs-input type="number" v-model="quantity"/>
-
             </vs-col>
           </vs-row>
 
@@ -81,7 +80,6 @@
 
         <template #footer>
           <div class="footer-dialog">
-
             <vs-button v-on:click="onSave()" block v-if="!user_id">
               Export Invoice & Save
             </vs-button>
@@ -89,17 +87,23 @@
         </template>
       </vs-dialog>
     </div>
-    <vs-table >
+
+    <vs-table>
+      <template #header>
+        <vs-input v-model="search" border placeholder="Search"/>
+      </template>
       <template #thead>
         <vs-tr>
-          <vs-th >Invoice ID</vs-th>
+          <vs-th sort @click="listSave = $vs.sortData($event ,listSave, 'invoice_id')">
+            Invoice ID
+          </vs-th>
           <vs-th >Invoice Total</vs-th>
           <vs-th >Create Date</vs-th>
           <vs-th >Edit</vs-th>
         </vs-tr>
       </template>
       <template #tbody>
-        <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(listSave, page, max)" :data="tr"  >
+        <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), page, max)"  :data="tr"  >
           <vs-td>{{ tr.invoice_id }}</vs-td>
           <vs-td>{{ tr.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
           <vs-td>{{ tr.create_at }}</vs-td>
@@ -132,6 +136,7 @@ export default  {
       data:[],
       userDetail: [],
       listCategory: [],
+      array:[],
       active: false,
       user_id: '',
       //create
@@ -141,11 +146,13 @@ export default  {
       category_id: '',
       total_price: 0,
       total_quantity: 0,
+      create_user: localStorage.getItem('User'),
+      search: '',
     }
   },
   methods: {
-    async getListCus() {
-      this.listSave = await Axios.get(`http://localhost:8000/api/invoice/`)
+    async getListCus(create_user) {
+      this.listSave = await Axios.get(`http://localhost:8000/api/invoiceByUser/${create_user}`)
           .then(response => {
             return Promise.resolve(response.data);
           })
@@ -202,6 +209,7 @@ export default  {
             price: this.price,
             quantity: this.quantity,
             category_id: this.category_id,
+            create_user: this.create_user,
           });
           this.total_price = parseFloat(this.price)*this.quantity + this.total_price;
         }
@@ -212,6 +220,7 @@ export default  {
           price: this.price,
           quantity: this.quantity,
           category_id: this.category_id,
+          create_user: this.create_user,
         });
         this.total_price = parseFloat(this.price) * parseFloat(this.quantity);
 
@@ -262,7 +271,7 @@ export default  {
           });
 
       this.active = false;
-      await this.getListCus();
+      await this.getListCus(this.create_user);
     }
 
   },
@@ -273,7 +282,7 @@ export default  {
 
   },
   mounted() {
-    this.getListCus();
+    this.getListCus(this.create_user);
     this.getListCategory();
   },
 }
@@ -288,15 +297,5 @@ export default  {
 }
 .home{
   margin-left: 60px;
-}
-.error{
-  color: red;
-  animation-name: shakeError;
-  animation-fill-mode: forwards;
-  animation-duration: .6s;
-  animation-timing-function: ease-in-out;
-}
-.selectExample {
-  margin: 10px;
 }
 </style>
