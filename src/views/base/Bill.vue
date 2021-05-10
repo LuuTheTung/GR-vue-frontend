@@ -39,7 +39,7 @@
             <vs-pagination v-model="page" :length="$vs.getLength(userDetail, max)" />
           </template>
         </vs-table>
-        <div class="con-form" v-if="!user_id">
+        <div class="con-form">
           <vs-row class="form-margin">
             <vs-col vs-type="flex" w="12" class="label-margin"> Total price: {{ this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}
             </vs-col>
@@ -76,8 +76,21 @@
           <vs-button v-on:click="addToList()" v-if="!user_id">
             Add to list
           </vs-button>
-        </div>
 
+
+        </div>
+        <vs-row v-if="user_id">
+          <downloadExcel
+              class            = "btn"
+              :fetch           = "fetchData"
+              :fields          = "json_fields"
+              :title = "titleInfo"
+              :footer = "footerInfo"
+              :name="fileName"
+          >
+            Download Excel
+          </downloadExcel>
+        </vs-row>
         <template #footer>
           <div class="footer-dialog">
             <vs-button v-on:click="onSave()" block v-if="!user_id">
@@ -148,6 +161,26 @@ export default  {
       total_quantity: 0,
       create_user: localStorage.getItem('User'),
       search: '',
+      json_fields: {
+        'Invoice ID': 'invoice_id',
+        'Category name': 'category_name',
+        'Quantity': 'quantity',
+        'Price': 'price',
+      },
+      titleInfo: [
+          'DIBO CAKE',
+          'Address: 106 Lang Street, Dong Da District',
+          'Phone: 0336741492'
+      ],
+      footerInfo: [
+          'Total: ',
+        'create_at_invoice',
+          ' ',
+          'Thank you for your bussiness!',
+        ],
+      fileName: ''
+      // total_price_invoice: 0,
+      // create_at_invoice: '',
     }
   },
   methods: {
@@ -172,7 +205,6 @@ export default  {
             const message = (error && error.data && error.data.message) || error.statusText;
             return Promise.reject(message);
           });
-      console.log(this.listCategory);
     },
     async onChange(name){
       let categoryDetail = await Axios.get(`http://localhost:8000/api/categoryName/${name}`)
@@ -190,7 +222,6 @@ export default  {
     },
     addToList(){
       if (this.userDetail.length > 0){
-        console.log(this.category_name);
         var exist = false;
         var id = 0;
         for (var j = 0; j < this.userDetail.length; j++) {
@@ -223,9 +254,7 @@ export default  {
           create_user: this.create_user,
         });
         this.total_price = parseFloat(this.price) * parseFloat(this.quantity);
-
       }
-      console.log(this.userDetail);
     },
     popList(index){
       this.userDetail.splice(index, 1);
@@ -255,7 +284,10 @@ export default  {
               const message = (error && error.data && error.data.message) || error.statusText;
               return Promise.reject(message);
             });
-
+        console.log(this.userDetail);
+        this.total_price = this.userDetail[0].total_price;
+        this.create_at_invoice = this.userDetail[0].create_at;
+        this.fileName = this.userDetail[0].invoice_id;
       }
     },
     async onSave() {
@@ -272,8 +304,13 @@ export default  {
 
       this.active = false;
       await this.getListCus(this.create_user);
-    }
-
+    },
+    async fetchData(){
+       var id = this.user_id ;
+      const response = await Axios.get(`http://localhost:8000/api/invoice/${id}`);
+      console.log(response.data);
+      return response.data;
+    },
   },
   computed: {
 
