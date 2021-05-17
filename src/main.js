@@ -10,7 +10,9 @@ import 'vuesax/dist/vuesax.css'
 import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
 import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 import Vuelidate from 'vuelidate'
+import JsonExcel from "vue-json-excel";
 
+Vue.component("downloadExcel", JsonExcel);
 Vue.component('VueCtkDateTimePicker', VueCtkDateTimePicker);
 Vue.config.performance = true
 Vue.use(CoreuiVue)

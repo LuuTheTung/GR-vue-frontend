@@ -24,15 +24,16 @@
             </vs-tr>
           </template>
           <template #tbody>
-            <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(userDetail, page, max)" :data="tr"  >
-              <vs-td>{{ tr.invoice_id }}</vs-td>
-              <vs-td>{{ tr.category_name }}</vs-td>
-              <vs-td>{{ tr.price }}</vs-td>
-              <vs-td>{{ tr.quantity }}</vs-td>
+            <vs-tr :key="i" v-for="(invoice, i) in $vs.getPage(userDetail, page, max)" :data="invoice"  >
+              <vs-td>{{ invoice.invoice_id }}</vs-td>
+              <vs-td>{{ invoice.category_name }}</vs-td>
+              <vs-td>{{ invoice.price }}</vs-td>
+              <vs-td>{{ invoice.quantity }}</vs-td>
               <vs-td  @click="popList(i)" v-if="!user_id">
                 <vs-button >
-                  Delete
-                </vs-button></vs-td>
+                  <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </vs-button>
+              </vs-td>
             </vs-tr>
           </template>
           <template #footer>
@@ -44,7 +45,6 @@
             <vs-col vs-type="flex" w="12" class="label-margin"> Total price: {{ this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}
             </vs-col>
           </vs-row>
-
         </div>
         <div class="con-form" v-if="!user_id">
           <vs-row class="form-margin">
@@ -76,8 +76,6 @@
           <vs-button v-on:click="addToList()" v-if="!user_id">
             Add to list
           </vs-button>
-
-
         </div>
         <vs-row v-if="user_id">
           <downloadExcel
@@ -88,13 +86,13 @@
               :footer = "footerInfo"
               :name="fileName"
           >
-            Download Excel
+            Export Invoice
           </downloadExcel>
         </vs-row>
         <template #footer>
           <div class="footer-dialog">
             <vs-button v-on:click="onSave()" block v-if="!user_id">
-              Export Invoice & Save
+              Save Invoice
             </vs-button>
           </div>
         </template>
@@ -112,22 +110,22 @@
           </vs-th>
           <vs-th >Invoice Total</vs-th>
           <vs-th >Create Date</vs-th>
-          <vs-th >Edit</vs-th>
+          <vs-th >Show Invoice</vs-th>
         </vs-tr>
       </template>
       <template #tbody>
-        <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), page, max)"  :data="tr"  >
+        <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), pageInvoice, max)"  :data="tr"  >
           <vs-td>{{ tr.invoice_id }}</vs-td>
           <vs-td>{{ tr.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
           <vs-td>{{ tr.create_at }}</vs-td>
           <vs-td  @click="onEdit(tr)">
             <vs-button >
-              Edit
+              Show
             </vs-button></vs-td>
         </vs-tr>
       </template>
       <template #footer>
-        <vs-pagination v-model="page" :length="$vs.getLength(listSave, max)" />
+        <vs-pagination v-model="pageInvoice" :length="$vs.getLength(listSave, max)" />
       </template>
     </vs-table>
 
@@ -143,7 +141,8 @@ export default  {
   props: [],
   data() {
     return {
-      page: 1,
+      pageInvoice: 1,
+      page:1,
       max: 10,
       listSave: [],
       data:[],
@@ -162,7 +161,6 @@ export default  {
       create_user: localStorage.getItem('User'),
       search: '',
       json_fields: {
-        'Invoice ID': 'invoice_id',
         'Category name': 'category_name',
         'Quantity': 'quantity',
         'Price': 'price',
@@ -170,17 +168,12 @@ export default  {
       titleInfo: [
           'DIBO CAKE',
           'Address: 106 Lang Street, Dong Da District',
-          'Phone: 0336741492'
+          'Phone: 0336741492',
       ],
-      footerInfo: [
-          'Total: ',
-        'create_at_invoice',
-          ' ',
-          'Thank you for your bussiness!',
-        ],
-      fileName: ''
-      // total_price_invoice: 0,
-      // create_at_invoice: '',
+      footerInfo: [],
+      fileName: '',
+      total_price_invoice: 0,
+      create_at_invoice: '',
     }
   },
   methods: {
@@ -306,7 +299,13 @@ export default  {
       await this.getListCus(this.create_user);
     },
     async fetchData(){
-       var id = this.user_id ;
+      this.titleInfo.push('Invoice # ' + this.fileName);
+      this.titleInfo.push('Date: ' + this.create_at_invoice);
+      this.titleInfo.push(' ');
+      this.footerInfo.push('Total:' + this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}));
+      this.footerInfo.push(' ');
+      this.footerInfo.push( 'Thank you for your bussiness!');
+      var id = this.user_id ;
       const response = await Axios.get(`http://localhost:8000/api/invoice/${id}`);
       console.log(response.data);
       return response.data;

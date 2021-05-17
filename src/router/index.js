@@ -16,7 +16,8 @@ const Tables = () => import('@/views/base/Tables')
 const Category = () => import('@/views/base/category')
 const Catalog = () => import('@/views/base/Catalog')
 const Bill = () => import('@/views/base/Bill')
-
+const Tooltips = () => import('@/views/base/Tooltips')
+const GuestInvoice = () => import('@/views/base/GuestInvoice')
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
@@ -118,6 +119,16 @@ function configRoutes () {
               path: 'bill',
               name: 'Bill',
               component: Bill
+            },
+            {
+              path: 'tooltips',
+              name: 'Tooltips',
+              component: Tooltips
+            },
+            {
+              path: 'guest-invoice',
+              name: 'guest-invoice',
+              component: GuestInvoice
             },
 
           ]
