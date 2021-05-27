@@ -8,7 +8,6 @@ const TheContainer = () => import('@/containers/TheContainer')
 const Dashboard = () => import('@/views/Dashboard')
 
 const Charts = () => import('@/views/charts/Charts')
-const Widgets = () => import('@/views/widgets/Widgets')
 
 // Views - Components
 const Forms = () => import('@/views/base/Forms')
@@ -16,16 +15,11 @@ const Tables = () => import('@/views/base/Tables')
 const Category = () => import('@/views/base/category')
 const Catalog = () => import('@/views/base/Catalog')
 const Bill = () => import('@/views/base/Bill')
-const Tooltips = () => import('@/views/base/Tooltips')
 const GuestInvoice = () => import('@/views/base/GuestInvoice')
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login')
-
-// Users
-const Users = () => import('@/views/users/Users')
-const User = () => import('@/views/users/User')
 
 Vue.use(Router)
 
@@ -56,84 +50,35 @@ function configRoutes () {
           component: Charts
         },
         {
-          path: 'widgets',
-          name: 'Widgets',
-          component: Widgets
+          path: 'category',
+          name: 'Category',
+          component: Category
         },
         {
-          path: 'users',
-          meta: {
-            label: 'Users'
-          },
-          component: {
-            render(c) {
-              return c('router-view')
-            }
-          },
-          children: [
-            {
-              path: '',
-              name: 'Users',
-              component: Users
-            },
-            {
-              path: ':id',
-              meta: {
-                label: 'User Details'
-              },
-              name: 'User',
-              component: User
-            }
-          ]
+          path: 'tables',
+          name: 'Tables',
+          component: Tables
         },
         {
-          path: 'base',
-          redirect: '/base/cards',
-          name: 'Base',
-          component: {
-            render (c) { return c('router-view') }
-          },
-          children: [
-            {
-              path: 'forms',
-              name: 'Forms',
-              component: Forms
-            },
-
-            {
-              path: 'tables',
-              name: 'Tables',
-              component: Tables
-            },
-            {
-              path: 'category',
-              name: 'Category',
-              component: Category
-            },
-            {
-              path: 'catalog',
-              name: 'Catalog',
-              component: Catalog
-            },
-            {
-              path: 'bill',
-              name: 'Bill',
-              component: Bill
-            },
-            {
-              path: 'tooltips',
-              name: 'Tooltips',
-              component: Tooltips
-            },
-            {
-              path: 'guest-invoice',
-              name: 'guest-invoice',
-              component: GuestInvoice
-            },
-
-          ]
+          path: 'catalog',
+          name: 'Catalog',
+          component: Catalog
         },
-
+        {
+          path: 'bill',
+          name: 'Bill',
+          component: Bill
+        },
+        {
+          path: 'guest-invoice',
+          name: 'guest-invoice',
+          component: GuestInvoice
+        },
+        {
+          path: 'forms',
+          name: 'Forms',
+          component: Forms
+        },
       ]
     },
     {

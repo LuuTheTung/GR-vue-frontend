@@ -20,25 +20,25 @@
         <template #icon>
           <i class="fa fa-users" aria-hidden="true"></i>
         </template>
-        <router-link :to="{ path: '/base/tables' }">Manage User/Admin</router-link>
+        <router-link :to="{ path: '/tables' }">Manage User/Admin</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="category" v-if="this.role == 0">
         <template #icon>
           <i class="fa fa-th-list" aria-hidden="true"></i>
         </template>
-        <router-link :to="{ path: '/base/category' }">Category</router-link>
+        <router-link :to="{ path: '/category' }">Category</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="catalog">
         <template #icon>
           <i class="fa fa-camera-retro"></i>
         </template>
-        <router-link :to="{ path: '/base/catalog' }">Catalog</router-link>
+        <router-link :to="{ path: '/catalog' }">Catalog</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="bill">
         <template #icon>
           <i class="fa fa-print"></i>
         </template>
-        <router-link :to="{ path: '/base/bill' }">Invoice</router-link>
+        <router-link :to="{ path: '/bill' }">Invoice</router-link>
       </vs-sidebar-item>
 
       <template #footer>
@@ -73,10 +73,10 @@ export default {
       var currentPath = this.$route.path;
       console.log(currentPath);
       if (currentPath == '/dashboard') this.active = 'dashboard'
-      else if (currentPath == '/base/tables') this.active = 'user'
-      else if (currentPath == '/base/category') this.active = 'category'
-      else if (currentPath == '/base/catalog') this.active = 'catalog'
-      else if (currentPath == '/base/bill') this.active = 'bill'
+      else if (currentPath == 'tables') this.active = 'user'
+      else if (currentPath == 'category') this.active = 'category'
+      else if (currentPath == 'catalog') this.active = 'catalog'
+      else if (currentPath == 'bill') this.active = 'bill'
     }
   },
 }

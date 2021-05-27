@@ -43,8 +43,9 @@
                     </vs-row>
                   </div>
                   <div class="con-form" v-if="!user_id">
-                    <vs-row class="form-margin">
-                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12"> Category Name:
+                    <vs-row>
+                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="4">
+                        Category Name:
                         <vs-select filter :key="listCategory.length" v-model="category_name"  disabled>
                           <vs-option
                               v-for="(item,index) in listCategory"
@@ -56,16 +57,12 @@
                           </vs-option>
                         </vs-select>
                       </vs-col>
-                    </vs-row>
-
-                    <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="1" class="label-margin"> Price:
+                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="4">
+                        Price:
                         <vs-input v-model="price" placeholder="Enter price" disabled/>
                       </vs-col>
-                    </vs-row>
-
-                    <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="12" class="label-margin"> Quantity:
+                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="4">
+                        Quantity:
                         <vs-input type="number" v-model="quantity"/>
                       </vs-col>
                     </vs-row>
@@ -81,14 +78,19 @@
                       </vs-col>
                     </vs-row>
 
-                    <vs-button v-on:click="addToList()" v-if="!user_id">
-                      Add to list
-                    </vs-button>
-                  </div>
-                  <div class="form-actions">
-                    <vs-button >
-                      Purchase
-                    </vs-button>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="12" class="label-margin">
+                        <vs-button v-on:click="addToList()" v-if="!user_id">
+                          Add to list
+                        </vs-button>
+                        <vs-button v-on:click="deleteImage()" v-if="!user_id">
+                          Delete Image
+                        </vs-button>
+                        <vs-button >
+                          Purchase
+                        </vs-button>
+                      </vs-col>
+                    </vs-row>
 
                   </div>
                 </CCardBody>
@@ -122,7 +124,8 @@
 
 <script>
 import Axios from "axios";
-import '@babel/polyfill'
+import '@babel/polyfill';
+
 export default {
 name: "GuestInvoice",
   data(){
@@ -130,13 +133,13 @@ name: "GuestInvoice",
       show: true,
       formCollapsed: true,
       pageInvoice: 1,
-      page:1,
+      page: 1,
       max: 10,
       listSave: [],
-      data:[],
+      data: [],
       userDetail: [],
       listCategory: [],
-      array:[],
+      array: [],
       active: false,
       user_id: '',
       //create
@@ -217,8 +220,6 @@ name: "GuestInvoice",
         return;
       this.image_dir = files[0].name;
       this.createImage(files[0]);
-      var image_url = "http://localhost:3000/api/v1/resources/C:\\\\Users\\\\OrianInsec\\\\Documents\\\\GR2\\\\test\\\\" + this.image_dir ;
-      console.log(image_url);
       let image_detected = await Axios.get(`http://localhost:3000/api/v1/resources/C:\\\\Users\\\\OrianInsec\\\\Documents\\\\GR2\\\\test\\\\${this.image_dir}`)
           .then(response => {
             return Promise.resolve(response.data);
@@ -228,21 +229,24 @@ name: "GuestInvoice",
             const message = (error && error.data && error.data.message) || error.statusText;
             return Promise.reject(message);
           });
-      console.log(image_detected[0]);
       var name = image_detected[0];
-      let categoryDetail = await Axios.get(`http://localhost:8000/api/categoryName/${name}`)
-          .then(response => {
-            return Promise.resolve(response.data);
-          })
-          .catch(error => {
-            error = error.response;
-            const message = (error && error.data && error.data.message) || error.statusText;
-            return Promise.reject(message);
-          });
-      this.price = categoryDetail['price'];
-      this.quantity = 1;
-      this.category_id = categoryDetail['id'];
-      this.category_name = name;
+      if (name){
+        let categoryDetail = await Axios.get(`http://localhost:8000/api/categoryName/${name}`)
+            .then(response => {
+              return Promise.resolve(response.data);
+            })
+            .catch(error => {
+              error = error.response;
+              const message = (error && error.data && error.data.message) || error.statusText;
+              return Promise.reject(message);
+            });
+        this.price = categoryDetail['price'];
+        this.quantity = 1;
+        this.category_id = categoryDetail['id'];
+        this.category_name = name;
+      }
+      else console.log('not detected')
+
     },
     createImage(file) {
       var reader = new FileReader();
@@ -253,18 +257,13 @@ name: "GuestInvoice",
       };
       reader.readAsDataURL(file);
     },
-
-    onCreateUser(){
-      this.active = true;
-      this.user_id = '';
+    deleteImage(){
+      this.image = '';
+      this.image_dir = '';
       this.category_name = '';
       this.price = '';
       this.quantity = 1;
-      this.category_id = '';
-      this.userDetail = [];
-      this.total_price = 0;
-      this.total_quantity = 0;
-    },
+    }
   },
   computed: {
 
