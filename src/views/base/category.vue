@@ -1,108 +1,130 @@
 <template lang="html">
   <section class="home">
-    <div class="center">
-      <vs-button v-on:click="onCreateCategory()">
-        Create category
-      </vs-button>
-      <vs-dialog prevent-close width="500px" v-model="active">
-        <template #header>
-          <h4 class="not-margin" v-if="!category_id">
-            Create <b>Category</b>
-          </h4>
-          <h4 class="not-margin" v-if="category_id">
-            Edit <b>Category</b>
-          </h4>
-        </template>
+    <div>
+      <CRow>
+        <CCol sm="12">
+            <CCard>
+              <CCardHeader>
+                <div class="row justify-content-between">
+                  <div class="col-4">
+                    <h4>Category</h4>
+                  </div>
+                  <div>
+                    <vs-button v-on:click="onCreateCategory()">
+                      <i class="fa fa-plus-circle" aria-hidden="true"></i> Create category
+                    </vs-button>
+                  </div>
+                </div>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody>
+                  <div>
+                    <vs-dialog prevent-close width="500px" v-model="active">
+                      <template #header>
+                        <h4 class="not-margin" v-if="!category_id">
+                          Create <b>Category</b>
+                        </h4>
+                        <h4 class="not-margin" v-if="category_id">
+                          Edit <b>Category</b>
+                        </h4>
+                      </template>
 
-        <div class="center grid">
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12"> Category Name:
-              <vs-input v-model="category_name" placeholder="Enter category name" />
-            </vs-col>
-          </vs-row>
+                      <div class="center grid">
+                        <vs-row class="form-margin">
+                          <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12"> Category Name:
+                            <vs-input v-model="category_name" placeholder="Enter category name" />
+                          </vs-col>
+                        </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="12" class="label-margin"> Type:</vs-col>
-            <vs-col vs-type="flex" w="12">
-              <vs-select placeholder="Select" v-model="type">
-                <vs-option label="Cake" value="1">
-                  Cake
-                </vs-option>
-                <vs-option label="Drink" value="2">
-                  Drink
-                </vs-option>
-              </vs-select>
-            </vs-col>
-          </vs-row>
+                        <vs-row class="form-margin">
+                          <vs-col vs-type="flex" w="12" class="label-margin"> Type:</vs-col>
+                          <vs-col vs-type="flex" w="12">
+                            <vs-select placeholder="Select" v-model="type">
+                              <vs-option label="Cake" value="1">
+                                Cake
+                              </vs-option>
+                              <vs-option label="Drink" value="2">
+                                Drink
+                              </vs-option>
+                            </vs-select>
+                          </vs-col>
+                        </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="12" class="label-margin"> Price:
-              <vs-input v-model="price" placeholder="Enter price" />
-            </vs-col>
-          </vs-row>
+                        <vs-row class="form-margin">
+                          <vs-col vs-type="flex" w="12" class="label-margin"> Price:
+                            <vs-input v-model="price" placeholder="Enter price" />
+                          </vs-col>
+                        </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="12" class="label-margin"> Sale off:
-              <vs-input v-model="sale_off" placeholder="Enter category name" />
-            </vs-col>
-          </vs-row>
+                        <vs-row class="form-margin">
+                          <vs-col vs-type="flex" w="12" class="label-margin"> Sale off:
+                            <vs-input v-model="sale_off" placeholder="%" />
+                          </vs-col>
+                        </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="12" class="label-margin"> Image:
-              <div v-if="!image">
-                <input type="file" @change="onFileChange">
-              </div>
-              <div v-else>
-                <img :src="image" />
-              </div>
+                        <vs-row class="form-margin">
+                          <vs-col vs-type="flex" w="12" class="label-margin"> Image:
+                            <div v-if="!image">
+                              <input type="file" @change="onFileChange">
+                            </div>
+                            <div v-else>
+                              <img :src="image" />
+                            </div>
 
-            </vs-col>
-          </vs-row>
-        </div>
+                          </vs-col>
+                        </vs-row>
+                      </div>
 
-        <template #footer>
-          <div class="footer-dialog">
-            <vs-button v-on:click="onSave(category_id)" block v-if="!category_id">
-              Create
-            </vs-button>
-          </div>
-          <div class="footer-dialog">
-            <vs-button v-on:click="onSave(category_id)" block v-if="category_id">
-              Update
-            </vs-button>
-          </div>
-        </template>
-      </vs-dialog>
+                      <template #footer>
+                        <div class="footer-dialog">
+                          <vs-button v-on:click="onSave(category_id)" block v-if="!category_id">
+                            Create
+                          </vs-button>
+                        </div>
+                        <div class="footer-dialog">
+                          <vs-button v-on:click="onSave(category_id)" block v-if="category_id">
+                            Update
+                          </vs-button>
+                        </div>
+                      </template>
+                    </vs-dialog>
+                  </div>
+
+                  <vs-table striped>
+                    <template #thead>
+                      <vs-tr>
+                        <vs-th style="width: 200px">Category name</vs-th>
+                        <vs-th sort-key="price">Price</vs-th>
+                        <vs-th >Sale Off</vs-th>
+                        <vs-th >Create Date</vs-th>
+                        <vs-th >Create User</vs-th>
+                        <vs-th >Edit Category</vs-th>
+                      </vs-tr>
+                    </template>
+                    <template #tbody>
+                      <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(listSave, page, max)" :data="tr"  >
+                        <vs-td>{{ tr.category_name }}</vs-td>
+                        <vs-td>{{ tr.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
+                        <vs-td>{{ tr.sale_off }}%</vs-td>
+                        <vs-td>{{ tr.create_at }}</vs-td>
+                        <vs-td>{{ tr.create_user }}</vs-td>
+                        <vs-td  @click="onEdit(tr)">
+                          <vs-button>
+                            <i class="fa fa-pencil" aria-hidden="true"></i>Edit
+                          </vs-button></vs-td>
+                      </vs-tr>
+                    </template>
+                    <template #footer>
+                      <vs-pagination v-model="page" :length="$vs.getLength(listSave, max)" />
+                    </template>
+                  </vs-table>
+
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+        </CCol>
+      </CRow>
     </div>
-    <vs-table striped>
-      <template #thead>
-        <vs-tr>
-          <vs-th style="width: 200px">Category name</vs-th>
-          <vs-th sort-key="price">Price</vs-th>
-          <vs-th >Sale Off</vs-th>
-          <vs-th >Create Date</vs-th>
-          <vs-th >Create User</vs-th>
-          <vs-th >Edit</vs-th>
-        </vs-tr>
-      </template>
-      <template #tbody>
-        <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(listSave, page, max)" :data="tr"  >
-          <vs-td>{{ tr.category_name }}</vs-td>
-          <vs-td>{{ tr.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
-          <vs-td>{{ tr.sale_off }}%</vs-td>
-          <vs-td>{{ tr.create_at }}</vs-td>
-          <vs-td>{{ tr.create_user }}</vs-td>
-          <vs-td  @click="onEdit(tr)">
-            <vs-button >
-              Edit
-            </vs-button></vs-td>
-        </vs-tr>
-      </template>
-      <template #footer>
-        <vs-pagination v-model="page" :length="$vs.getLength(listSave, max)" />
-      </template>
-    </vs-table>
-
   </section>
 </template>
 
@@ -115,6 +137,7 @@ export default  {
   props: [],
   data() {
     return {
+      formCollapsed: true,
       page: 1,
       max: 10,
       listSave: [],
@@ -271,19 +294,22 @@ export default  {
 </script>
 
 <style scoped>
-.form-margin{
-  margin: 0px 0px 10px 20px;
-}
-.label-margin{
-  margin-bottom: 10px;
-}
-.home{
-  margin-left: 60px;
-}
-img {
-  width: 30%;
-  margin: auto;
-  display: block;
-  margin-bottom: 10px;
-}
+  .form-margin{
+    margin: 0px 0px 10px 20px;
+  }
+  .label-margin{
+    margin-bottom: 10px;
+  }
+  .home{
+    margin-left: 60px;
+  }
+  img {
+    width: 30%;
+    margin: auto;
+    display: block;
+    margin-bottom: 10px;
+  }
+  h4{
+    padding-top: 8px;
+  }
 </style>

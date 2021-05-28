@@ -61,7 +61,6 @@ export default {
     role: localStorage.getItem('role'),
   }),
   mounted() {
-    console.log(this.role);
     this.getURL();
   },
   methods: {
@@ -73,10 +72,10 @@ export default {
       var currentPath = this.$route.path;
       console.log(currentPath);
       if (currentPath == '/dashboard') this.active = 'dashboard'
-      else if (currentPath == 'tables') this.active = 'user'
-      else if (currentPath == 'category') this.active = 'category'
-      else if (currentPath == 'catalog') this.active = 'catalog'
-      else if (currentPath == 'bill') this.active = 'bill'
+      else if (currentPath == '/tables') this.active = 'user'
+      else if (currentPath == '/category') this.active = 'category'
+      else if (currentPath == '/catalog') this.active = 'catalog'
+      else if (currentPath == '/bill') this.active = 'bill'
     }
   },
 }

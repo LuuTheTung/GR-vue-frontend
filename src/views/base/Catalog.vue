@@ -1,46 +1,66 @@
 <template>
   <section class="home">
     <div>
-      <h4><i class="fa fa-birthday-cake" aria-hidden="true"></i> Cake:</h4>
-      <vs-card-group>
-        <vs-card :key="i" v-for="(card,i) in listCake" >
-          <template #title>
-            <h3>{{card.category_name}}</h3>
-          </template>
-          <template #img>
-            <img :src="`/img/${card.src}`" alt="">
-          </template>
-          <template #text>
-            <p>
-              {{card.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}
-            </p>
-          </template>
-        </vs-card>
-      </vs-card-group>
-    </div>
-    <div>
-      <div></div>
-      <h4 style="margin-top: 30px;"><i class="fa fa-coffee" aria-hidden="true"></i> Drink:</h4>
-      <vs-card-group>
-        <vs-card :key="i" v-for="(card,i) in listDrink" >
-          <template #title>
-            <h3>{{card.category_name}}</h3>
-          </template>
-          <template #img>
-            <img :src="`/img/${card.src}`" alt="">
-          </template>
-          <template #text>
-            <p>
-              {{card.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}
-            </p>
-          </template>
-        </vs-card>
-      </vs-card-group>
+      <CRow>
+        <CCol sm="12">
+            <CCard>
+              <CCardHeader>
+                <h4><i class="fa fa-birthday-cake" aria-hidden="true"></i> Cake:</h4>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody>
+                 <div>
+                   <vs-card-group>
+                     <vs-card :key="i" v-for="(card,i) in listCake" >
+                       <template #title>
+                         <h3>{{card.category_name}}</h3>
+                       </template>
+                       <template #img>
+                         <img :src="`/img/${card.src}`" alt="">
+                       </template>
+                       <template #text>
+                         <p>
+                           {{card.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}
+                         </p>
+                       </template>
+                     </vs-card>
+                   </vs-card-group>
+                 </div>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+        </CCol>
+        <CCol sm="12">
+            <CCard>
+              <CCardHeader>
+                <h4><i class="fa fa-coffee" aria-hidden="true"></i> Drink:</h4>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody>
+                  <div>
+                    <vs-card-group>
+                      <vs-card :key="i" v-for="(card,i) in listDrink" >
+                        <template #title>
+                          <h3>{{card.category_name}}</h3>
+                        </template>
+                        <template #img>
+                          <img :src="`/img/${card.src}`" alt="">
+                        </template>
+                        <template #text>
+                          <p>
+                            {{card.price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}
+                          </p>
+                        </template>
+                      </vs-card>
+                    </vs-card-group>
+                  </div>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+        </CCol>
+      </CRow>
     </div>
   </section>
-
-
-
 </template>
 
 <script>
@@ -50,6 +70,7 @@ export default {
 name: "Catalog",
   data() {
     return {
+      formCollapsed: true,
       card: [],
       listSave: [],
       listCake:[],
@@ -67,7 +88,6 @@ name: "Catalog",
             const message = (error && error.data && error.data.message) || error.statusText;
             return Promise.reject(message);
           });
-      console.log(this.listSave);
       for (var j = 0; j < this.listSave.length; j++) {
         if(this.listSave[j].type == 1){
           this.listCake.push(this.listSave[j]);
@@ -89,6 +109,6 @@ name: "Catalog",
   margin-left: 60px;
 }
 h4{
-  font: 700 2em/1em 'Libre Caslon Text', Georgia, Times New Roman, serif;
+  font: 700 25px 'Libre Caslon Text', Georgia, Times New Roman, serif;
 }
 </style>

@@ -1,134 +1,151 @@
 <template lang="html">
   <section class="home">
-    <div class="center">
-      <vs-button v-on:click="onCreateUser()">
-        Create Invoice
-      </vs-button>
-      <vs-dialog prevent-close width="700px" v-model="active">
-        <template #header>
-          <h4 class="not-margin" v-if="!user_id">
-            Create <b>Invoice</b>
-          </h4>
-          <h4 class="not-margin" v-if="user_id">
-            Show <b>Invoice</b>
-          </h4>
-        </template>
-        <vs-table >
-          <template #thead>
-            <vs-tr>
-              <vs-th >Invoice ID</vs-th>
-              <vs-th >Category name</vs-th>
-              <vs-th >Price</vs-th>
-              <vs-th >Quantity</vs-th>
-              <vs-th v-if="!user_id">Delete </vs-th>
-            </vs-tr>
-          </template>
-          <template #tbody>
-            <vs-tr :key="i" v-for="(invoice, i) in $vs.getPage(userDetail, page, max)" :data="invoice"  >
-              <vs-td>{{ invoice.invoice_id }}</vs-td>
-              <vs-td>{{ invoice.category_name }}</vs-td>
-              <vs-td>{{ invoice.price }}</vs-td>
-              <vs-td>{{ invoice.quantity }}</vs-td>
-              <vs-td  @click="popList(i)" v-if="!user_id">
-                <vs-button >
-                  <i class="fa fa-trash-o" aria-hidden="true"></i>
-                </vs-button>
-              </vs-td>
-            </vs-tr>
-          </template>
-          <template #footer>
-            <vs-pagination v-model="page" :length="$vs.getLength(userDetail, max)" />
-          </template>
-        </vs-table>
-        <div class="con-form">
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="12" class="label-margin"> Total price: {{ this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}
-            </vs-col>
-          </vs-row>
-        </div>
-        <div class="con-form" v-if="!user_id">
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12"> Category Name:
-              <vs-select filter v-model="category_name"  @change="onChange(category_name)">
-                <vs-option :key="index"
-                           :value="item.category_name"
-                           :label="item.category_name"
-                           v-for="(item,index) in listCategory"
-                >
-                  {{item.category_name}}
-                </vs-option>
-              </vs-select>
-            </vs-col>
-          </vs-row>
+    <div>
+      <CRow>
+        <CCol sm="12">
+          <CCard>
+            <CCardHeader>
+              <div class="row justify-content-between">
+                <div class="col-4">
+                  <h4>Invoice Management</h4>
+                </div>
+                <div>
+                  <vs-button v-on:click="onCreateUser()">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Create Invoice
+                  </vs-button>
+                </div>
+              </div>
+            </CCardHeader>
+            <CCollapse :show="formCollapsed">
+              <CCardBody>
+                <vs-dialog prevent-close width="700px" v-model="active">
+                  <template #header>
+                    <h4 class="not-margin" v-if="!user_id">
+                      Create <b>Invoice</b>
+                    </h4>
+                    <h4 class="not-margin" v-if="user_id">
+                      Show <b>Invoice</b>
+                    </h4>
+                  </template>
+                  <vs-table >
+                    <template #thead>
+                      <vs-tr>
+                        <vs-th >Invoice ID</vs-th>
+                        <vs-th >Category name</vs-th>
+                        <vs-th >Price</vs-th>
+                        <vs-th >Quantity</vs-th>
+                        <vs-th v-if="!user_id">Delete </vs-th>
+                      </vs-tr>
+                    </template>
+                    <template #tbody>
+                      <vs-tr :key="i" v-for="(invoice, i) in $vs.getPage(userDetail, page, max)" :data="invoice"  >
+                        <vs-td>{{ invoice.invoice_id }}</vs-td>
+                        <vs-td>{{ invoice.category_name }}</vs-td>
+                        <vs-td>{{ invoice.price }}</vs-td>
+                        <vs-td>{{ invoice.quantity }}</vs-td>
+                        <vs-td  @click="popList(i)" v-if="!user_id">
+                          <vs-button >
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                          </vs-button>
+                        </vs-td>
+                      </vs-tr>
+                    </template>
+                    <template #footer>
+                      <vs-pagination v-model="page" :length="$vs.getLength(userDetail, max)" />
+                    </template>
+                  </vs-table>
+                  <div class="con-form">
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="12" class="label-margin"> Total price: {{ this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}
+                      </vs-col>
+                    </vs-row>
+                  </div>
+                  <div class="con-form" v-if="!user_id">
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12"> Category Name:
+                        <vs-select filter v-model="category_name"  @change="onChange(category_name)">
+                          <vs-option :key="index"
+                                     :value="item.category_name"
+                                     :label="item.category_name"
+                                     v-for="(item,index) in listCategory"
+                          >
+                            {{item.category_name}}
+                          </vs-option>
+                        </vs-select>
+                      </vs-col>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="12" class="label-margin"> Price:
-              <vs-input v-model="price" placeholder="Enter price" />
-            </vs-col>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="12" class="label-margin"> Price:
+                        <vs-input v-model="price" placeholder="Enter price" />
+                      </vs-col>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="12" class="label-margin"> Quantity:
-              <vs-input type="number" v-model="quantity"/>
-            </vs-col>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="12" class="label-margin"> Quantity:
+                        <vs-input type="number" v-model="quantity"/>
+                      </vs-col>
+                    </vs-row>
 
-          <vs-button v-on:click="addToList()" v-if="!user_id">
-            Add to list
-          </vs-button>
-        </div>
-        <vs-row v-if="user_id">
-          <downloadExcel
-              class            = "btn"
-              :fetch           = "fetchData"
-              :fields          = "json_fields"
-              :title = "titleInfo"
-              :footer = "footerInfo"
-              :name="fileName"
-          >
-            Export Invoice
-          </downloadExcel>
-        </vs-row>
-        <template #footer>
-          <div class="footer-dialog">
-            <vs-button v-on:click="onSave()" block v-if="!user_id">
-              Save Invoice
-            </vs-button>
-          </div>
-        </template>
-      </vs-dialog>
+                    <vs-button v-on:click="addToList()" v-if="!user_id">
+                      Add to list
+                    </vs-button>
+                  </div>
+                  <vs-row v-if="user_id">
+                    <downloadExcel
+                        class            = "btn"
+                        :fetch           = "fetchData"
+                        :fields          = "json_fields"
+                        :title = "titleInfo"
+                        :footer = "footerInfo"
+                        :name="fileName"
+                    >
+                      Export Invoice
+                    </downloadExcel>
+                  </vs-row>
+                  <template #footer>
+                    <div class="footer-dialog">
+                      <vs-button v-on:click="onSave()" block v-if="!user_id">
+                        Save Invoice
+                      </vs-button>
+                    </div>
+                  </template>
+                </vs-dialog>
+                <vs-table>
+                  <template #header>
+                    <vs-input v-model="search" border placeholder="Search"/>
+                  </template>
+                  <template #thead>
+                    <vs-tr>
+                      <vs-th sort @click="listSave = $vs.sortData($event ,listSave, 'invoice_id')">
+                        Invoice ID
+                      </vs-th>
+                      <vs-th >Invoice Total</vs-th>
+                      <vs-th >Create Date</vs-th>
+                      <vs-th >Show Invoice</vs-th>
+                    </vs-tr>
+                  </template>
+                  <template #tbody>
+                    <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), pageInvoice, max)"  :data="tr"  >
+                      <vs-td>{{ tr.invoice_id }}</vs-td>
+                      <vs-td>{{ tr.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
+                      <vs-td>{{ tr.create_at }}</vs-td>
+                      <vs-td  @click="onEdit(tr)">
+                        <vs-button >
+                          <i class="fa fa-pencil" aria-hidden="true"></i> Show
+                        </vs-button></vs-td>
+                    </vs-tr>
+                  </template>
+                  <template #footer>
+                    <vs-pagination v-model="pageInvoice" :length="$vs.getLength(listSave, max)" />
+                  </template>
+                </vs-table>
+              </CCardBody>
+            </CCollapse>
+          </CCard>
+        </CCol>
+      </CRow>
     </div>
-
-    <vs-table>
-      <template #header>
-        <vs-input v-model="search" border placeholder="Search"/>
-      </template>
-      <template #thead>
-        <vs-tr>
-          <vs-th sort @click="listSave = $vs.sortData($event ,listSave, 'invoice_id')">
-            Invoice ID
-          </vs-th>
-          <vs-th >Invoice Total</vs-th>
-          <vs-th >Create Date</vs-th>
-          <vs-th >Show Invoice</vs-th>
-        </vs-tr>
-      </template>
-      <template #tbody>
-        <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), pageInvoice, max)"  :data="tr"  >
-          <vs-td>{{ tr.invoice_id }}</vs-td>
-          <vs-td>{{ tr.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}</vs-td>
-          <vs-td>{{ tr.create_at }}</vs-td>
-          <vs-td  @click="onEdit(tr)">
-            <vs-button >
-              Show
-            </vs-button></vs-td>
-        </vs-tr>
-      </template>
-      <template #footer>
-        <vs-pagination v-model="pageInvoice" :length="$vs.getLength(listSave, max)" />
-      </template>
-    </vs-table>
-
   </section>
 </template>
 
@@ -141,6 +158,7 @@ export default  {
   props: [],
   data() {
     return {
+      formCollapsed: true,
       pageInvoice: 1,
       page:1,
       max: 10,
@@ -277,7 +295,6 @@ export default  {
               const message = (error && error.data && error.data.message) || error.statusText;
               return Promise.reject(message);
             });
-        console.log(this.userDetail);
         this.total_price = this.userDetail[0].total_price;
         this.create_at_invoice = this.userDetail[0].create_at;
         this.fileName = this.userDetail[0].invoice_id;
@@ -302,12 +319,11 @@ export default  {
       this.titleInfo.push('Invoice # ' + this.fileName);
       this.titleInfo.push('Date: ' + this.create_at_invoice);
       this.titleInfo.push(' ');
-      this.footerInfo.push('Total:' + this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}));
+      this.footerInfo.push('Total: ' + this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}));
       this.footerInfo.push(' ');
       this.footerInfo.push( 'Thank you for your bussiness!');
       var id = this.user_id ;
       const response = await Axios.get(`http://localhost:8000/api/invoice/${id}`);
-      console.log(response.data);
       return response.data;
     },
   },
@@ -325,13 +341,16 @@ export default  {
 </script>
 
 <style scoped>
-.form-margin{
-  margin: 0px 0px 10px 20px;
-}
-.label-margin{
-  margin-bottom: 10px;
-}
-.home{
-  margin-left: 60px;
-}
+  .form-margin{
+    margin: 0px 0px 10px 20px;
+  }
+  .label-margin{
+    margin-bottom: 10px;
+  }
+  .home{
+    margin-left: 60px;
+  }
+  h4{
+    padding-top: 8px;
+  }
 </style>

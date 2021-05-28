@@ -1,153 +1,195 @@
 <template lang="html">
   <section class="home">
-    <div class="center">
-      <vs-button v-on:click="onCreateUser()">
-        Create Account
-      </vs-button>
-      <vs-dialog prevent-close width="700px" v-model="active">
-        <template #header>
-          <h4 class="not-margin" v-if="!user_id">
-            Create <b>User/Admin</b>
-          </h4>
-          <h4 class="not-margin" v-if="user_id">
-            Edit <b>User/Admin</b>
-          </h4>
-        </template>
-        <div class="con-form">
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="6" class="label-margin"> Company branch:</vs-col>
-            <vs-col vs-type="flex" w="12">
-              <vs-select placeholder="Select" v-model="mst_company_id">
-                <vs-option label="Ha noi" value="1">
-                  Ha noi
-                </vs-option>
-                <vs-option label="Ho Chi Minh" value="2">
-                  Ho Chi Minh
-                </vs-option>
-              </vs-select>
-            </vs-col>
-          </vs-row>
+    <div>
+      <CRow>
+        <CCol sm="12">
+          <CCard>
+            <CCardHeader>
+              <div class="row justify-content-between">
+                <div class="col-4">
+                  <h4>Account Management</h4>
+                </div>
+                <div>
+                  <vs-button v-on:click="onCreateUser()">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Create Account
+                  </vs-button>
+                </div>
+              </div>
+            </CCardHeader>
+            <CCollapse :show="formCollapsed">
+              <CCardBody>
+                <vs-dialog prevent-close width="700px" v-model="active">
+                  <template #header>
+                    <h4 class="not-margin" v-if="!user_id">
+                      Create <b>User/Admin</b>
+                    </h4>
+                    <h4 class="not-margin" v-if="user_id">
+                      Edit <b>User/Admin</b>
+                    </h4>
+                  </template>
+                  <div class="con-form">
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Company branch:</vs-col>
+                      <vs-col vs-type="flex" w="12">
+                        <vs-select placeholder="Select" v-model="mst_company_id">
+                          <vs-option label="Ha noi" value="1">
+                            Ha noi
+                          </vs-option>
+                          <vs-option label="Ho Chi Minh" value="2">
+                            Ho Chi Minh
+                          </vs-option>
+                        </vs-select>
+                      </vs-col>
+                    </vs-row>
 
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="6" class="label-margin"> Given Name:
-              <vs-input v-model="given_name" placeholder="Enter given name" />
-            </vs-col>
-            <vs-col vs-type="flex" w="6" class="label-margin"> Family Name:
-              <vs-input v-model="family_name" placeholder="Enter family name" />
-            </vs-col>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Given Name:
+                        <vs-input v-model="given_name" placeholder="Enter given name" />
+                      </vs-col>
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Family Name:
+                        <vs-input v-model="family_name" placeholder="Enter family name" />
+                      </vs-col>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.email.$error }"> Email:
-              <vs-input v-model="$v.email.$model" placeholder="Enter email" />
-              <div  v-if="!$v.email.email">Email invalid</div>
-            </vs-col>
-            <vs-col vs-type="flex" w="6" class="label-margin"> Password:
-              <vs-input type="password"  v-model="password" placeholder="Enter password" ></vs-input>
-            </vs-col>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.email.$error }"> Email:
+                        <vs-input v-model="$v.email.$model" placeholder="Enter email" />
+                        <div  v-if="!$v.email.email">Email invalid</div>
+                      </vs-col>
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Password:
+                        <vs-input type="password"  v-model="password" placeholder="Enter password" ></vs-input>
+                      </vs-col>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.phone_number.$error }"> Phone number:
-              <vs-input v-model="$v.phone_number.$model" placeholder="Enter phone number" />
-              <div v-if="!$v.phone_number.numeric">Phone number invalid</div>
-            </vs-col>
-            <vs-col vs-type="flex" w="6" class="label-margin"> Address:
-              <vs-input v-model="address" placeholder="Enter address" />
-            </vs-col>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="6" class="label-margin" :class="{ 'error': $v.phone_number.$error }"> Phone number:
+                        <vs-input v-model="$v.phone_number.$model" placeholder="Enter phone number" />
+                        <div v-if="!$v.phone_number.numeric">Phone number invalid</div>
+                      </vs-col>
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Address:
+                        <vs-input v-model="address" placeholder="Enter address" />
+                      </vs-col>
 
-          </vs-row>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col class="label-margin"> State:</vs-col>
-              <vs-radio v-model="state_flg" val="0">
-                Working
-              </vs-radio>
-              <vs-radio disabled v-model="state_flg" val="1" v-if="!user_id">
-                Rejected
-              </vs-radio>
-            <vs-radio v-model="state_flg" val="1" v-if="user_id">
-                Rejected
-              </vs-radio>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col class="label-margin"> State:</vs-col>
+                      <vs-radio v-model="state_flg" val="0">
+                        Working
+                      </vs-radio>
+                      <vs-radio disabled v-model="state_flg" val="1" v-if="!user_id">
+                        Rejected
+                      </vs-radio>
+                      <vs-radio v-model="state_flg" val="1" v-if="user_id">
+                        Rejected
+                      </vs-radio>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="6" class="label-margin"> Work from:</vs-col>
-            <vs-col vs-type="flex" w="8">
-              <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'" required></VueCtkDateTimePicker>
-            </vs-col>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Work from:</vs-col>
+                      <vs-col vs-type="flex" w="8">
+                        <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'" required></VueCtkDateTimePicker>
+                      </vs-col>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col vs-type="flex" w="6" class="label-margin"> Reject from:</vs-col>
-            <vs-col vs-type="flex" w="8">
-              <VueCtkDateTimePicker disabled v-model="end_work_date" v-if="!user_id"></VueCtkDateTimePicker>
-              <VueCtkDateTimePicker v-model="end_work_date" v-if="user_id" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'"></VueCtkDateTimePicker>
-            </vs-col>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Reject from:</vs-col>
+                      <vs-col vs-type="flex" w="8">
+                        <VueCtkDateTimePicker disabled v-model="end_work_date" v-if="!user_id"></VueCtkDateTimePicker>
+                        <VueCtkDateTimePicker v-model="end_work_date" v-if="user_id" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'"></VueCtkDateTimePicker>
+                      </vs-col>
+                    </vs-row>
 
-          <vs-row class="form-margin">
-            <vs-col class="label-margin"> Role:</vs-col>
-            <vs-radio v-model="user_flg" val="0">
-              Admin
-            </vs-radio>
-            <vs-radio v-model="user_flg" val="1">
-              User
-            </vs-radio>
-          </vs-row>
+                    <vs-row class="form-margin">
+                      <vs-col class="label-margin"> Role:</vs-col>
+                      <vs-radio v-model="user_flg" val="0">
+                        Admin
+                      </vs-radio>
+                      <vs-radio v-model="user_flg" val="1">
+                        User
+                      </vs-radio>
+                    </vs-row>
 
-        </div>
+                  </div>
 
-        <template #footer>
-          <div class="footer-dialog">
-            <vs-button v-on:click="onSave(user_id)" block v-if="!user_id">
-              Create
-            </vs-button>
-            <vs-button v-on:click="onSave(user_id)" block v-if="user_id">
-              Update
-            </vs-button>
-          </div>
-        </template>
-      </vs-dialog>
+                  <template #footer>
+                    <div class="footer-dialog">
+                      <vs-button v-on:click="onSave(user_id)" block v-if="!user_id">
+                        Create
+                      </vs-button>
+                      <vs-button v-on:click="onSave(user_id)" block v-if="user_id">
+                        Update
+                      </vs-button>
+                    </div>
+                  </template>
+                </vs-dialog>
+                <vs-table >
+                  <template #header>
+                    <vs-input v-model="search" border placeholder="Search"/>
+                  </template>
+                  <template #thead>
+                    <vs-tr>
+                      <vs-th style="width: 200px" sort @click="listSave = $vs.sortData($event ,listSave, 'mst_company_id')">Company Branch</vs-th>
+                      <vs-th >First Name</vs-th>
+                      <vs-th >Last Name</vs-th>
+                      <vs-th >Email</vs-th>
+                      <vs-th >Phone Number</vs-th>
+                      <vs-th >Address</vs-th>
+                      <vs-th >Role</vs-th>
+                      <vs-th >Work From</vs-th>
+                      <vs-th >Reject From</vs-th>
+                      <vs-th class="center">Edit Account</vs-th>
+                    </vs-tr>
+                  </template>
+                  <template #tbody>
+                    <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), page, max)"  :data="tr"  >
+                      <vs-td>{{ tr.mst_company_id | filterCompany}}</vs-td>
+                      <vs-td>{{ tr.family_name }}</vs-td>
+                      <vs-td>{{ tr.given_name }}</vs-td>
+                      <vs-td>{{ tr.email }}</vs-td>
+                      <vs-td>{{ tr.phone_number }}</vs-td>
+                      <vs-td>{{ tr.address }}</vs-td>
+                      <vs-td>{{ tr.user_flg |filterRole}}</vs-td>
+                      <vs-td>{{ tr.start_work_date }}</vs-td>
+                      <vs-td>{{ tr.end_work_date }}</vs-td>
+                      <vs-td  @click="onEdit(tr)">
+                        <vs-button >
+                          <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+                        </vs-button></vs-td>
+                    </vs-tr>
+                  </template>
+                  <template #footer>
+                    <vs-pagination v-model="page" :length="$vs.getLength(listSave, max)" />
+                  </template>
+                </vs-table>
+              </CCardBody>
+            </CCollapse>
+          </CCard>
+        </CCol>
+        <CCol sm="12">
+          <CCard>
+            <CCardHeader>
+              <div class="row justify-content-between">
+                <div class="col-4">
+                  <h4>Company Branch Management</h4>
+                </div>
+                <div>
+                  <vs-button v-on:click="onCreateUser()">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Create Account
+                  </vs-button>
+                </div>
+              </div>
+            </CCardHeader>
+            <CCollapse :show="formCollapsed">
+              <CCardBody>
+                test
+              </CCardBody>
+            </CCollapse>
+          </CCard>
+        </CCol>
+      </CRow>
     </div>
-    <vs-table >
-      <template #thead>
-        <vs-tr>
-          <vs-th style="width: 200px">Company Branch</vs-th>
-          <vs-th >First Name</vs-th>
-          <vs-th >Last Name</vs-th>
-          <vs-th >Email</vs-th>
-          <vs-th >Phone Number</vs-th>
-          <vs-th >Address</vs-th>
-          <vs-th >Role</vs-th>
-          <vs-th >Work From</vs-th>
-          <vs-th >Reject From</vs-th>
-          <vs-th >Edit</vs-th>
-        </vs-tr>
-      </template>
-      <template #tbody>
-        <vs-tr :key="i" v-for="(tr, i) in $vs.getPage(listSave, page, max)" :data="tr"  >
-          <vs-td>{{ tr.mst_company_id | filterCompany}}</vs-td>
-          <vs-td>{{ tr.family_name }}</vs-td>
-          <vs-td>{{ tr.given_name }}</vs-td>
-          <vs-td>{{ tr.email }}</vs-td>
-          <vs-td>{{ tr.phone_number }}</vs-td>
-          <vs-td>{{ tr.address }}</vs-td>
-          <vs-td>{{ tr.user_flg |filterRole}}</vs-td>
-          <vs-td>{{ tr.start_work_date }}</vs-td>
-          <vs-td>{{ tr.end_work_date }}</vs-td>
-          <vs-td  @click="onEdit(tr)">
-            <vs-button >
-              Edit
-            </vs-button></vs-td>
-        </vs-tr>
-      </template>
-      <template #footer>
-        <vs-pagination v-model="page" :length="$vs.getLength(listSave, max)" />
-      </template>
-    </vs-table>
-
   </section>
 </template>
 
@@ -160,10 +202,12 @@ export default  {
   props: [],
   data() {
     return {
+      formCollapsed: true,
       page: 1,
       max: 10,
       listSave: [],
       data:[],
+      search: '',
       // userDetail: [],
       active: false,
       //create
@@ -363,20 +407,23 @@ export default  {
 </script>
 
 <style scoped>
-.form-margin{
-  margin: 0px 0px 10px 20px;
-}
-.label-margin{
-  margin-bottom: 10px;
-}
-.home{
-  margin-left: 60px;
-}
-.error{
-  color: red;
-  animation-name: shakeError;
-  animation-fill-mode: forwards;
-  animation-duration: .6s;
-  animation-timing-function: ease-in-out;
-}
+  .form-margin{
+    margin: 0px 0px 10px 20px;
+  }
+  .label-margin{
+    margin-bottom: 10px;
+  }
+  .home{
+    margin-left: 60px;
+  }
+  .error{
+    color: red;
+    animation-name: shakeError;
+    animation-fill-mode: forwards;
+    animation-duration: .6s;
+    animation-timing-function: ease-in-out;
+  }
+  h4{
+    padding-top: 8px;
+  }
 </style>
