@@ -1,7 +1,6 @@
 <template>
   <div class="hidden">
     <vs-sidebar
-        absolute
         hover-expand
         reduce
         v-model="active"
@@ -16,11 +15,17 @@
         </template>
         <router-link :to="{ path: '/dashboard' }">Dashboard</router-link>
       </vs-sidebar-item>
+      <vs-sidebar-item id="company" v-if="this.role == 0">
+        <template #icon>
+          <i class="fa fa-building-o" aria-hidden="true"></i>
+        </template>
+        <router-link :to="{ path: '/company' }">Company</router-link>
+      </vs-sidebar-item>
       <vs-sidebar-item id="user" v-if="this.role == 0">
         <template #icon>
           <i class="fa fa-users" aria-hidden="true"></i>
         </template>
-        <router-link :to="{ path: '/tables' }">Manage User/Admin</router-link>
+        <router-link :to="{ path: '/tables' }">Manage Account</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="category" v-if="this.role == 0">
         <template #icon>
@@ -76,6 +81,8 @@ export default {
       else if (currentPath == '/category') this.active = 'category'
       else if (currentPath == '/catalog') this.active = 'catalog'
       else if (currentPath == '/bill') this.active = 'bill'
+      else if (currentPath == '/company') this.active = 'company'
+      else if (currentPath == '/pages/login') this.active = 'log'
     }
   },
 }

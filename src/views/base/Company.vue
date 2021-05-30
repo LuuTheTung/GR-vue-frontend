@@ -7,11 +7,11 @@
             <CCardHeader>
               <div class="row justify-content-between">
                 <div class="col-4">
-                  <h4>Account Management</h4>
+                  <h4>Company Branch Management</h4>
                 </div>
                 <div>
                   <vs-button v-on:click="onCreateUser()">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Create Account
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Create Company
                   </vs-button>
                 </div>
               </div>
@@ -21,12 +21,47 @@
                 <vs-dialog prevent-close width="700px" v-model="active">
                   <template #header>
                     <h4 class="not-margin" v-if="!user_id">
-                      Create <b>User</b>
+                      Create <b>Company</b>
                     </h4>
                     <h4 class="not-margin" v-if="user_id">
-                      Edit <b>User</b>
+                      Edit <b>Company</b>
                     </h4>
                   </template>
+                  <div class="con-form">
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="4" class="label-margin"> Company name:
+                        <vs-input border v-model="company_name" placeholder="Enter company name" />
+                      </vs-col>
+                    </vs-row>
+
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="4" class="label-margin" :class="{ 'error': $v.phone_number.$error }"> Phone number:
+                        <vs-input border v-model="$v.phone_number.$model" placeholder="Enter phone number" />
+                        <div v-if="!$v.phone_number.numeric">Phone number invalid</div>
+                      </vs-col>
+                      <vs-col vs-type="flex" w="2" class="label-margin">
+                      </vs-col>
+                      <vs-col vs-type="flex" w="4" class="label-margin"> Address:
+                        <vs-input border v-model="address" placeholder="Enter address" />
+                      </vs-col>
+
+                    </vs-row>
+
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="6" class="label-margin"> Open from:</vs-col>
+                      <vs-col vs-type="flex" w="10">
+                        <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY'" :format="'MM/DD/YYYY'" required></VueCtkDateTimePicker>
+                      </vs-col>
+                    </vs-row>
+                  </div>
+                  <div class="createAdmin">
+                    <h4 class="not-margin" v-if="!user_id">
+                      Create <b>Admin</b>
+                    </h4>
+                    <h4 class="not-margin" v-if="user_id">
+                      Edit <b>Admin</b>
+                    </h4>
+                  </div>
                   <div class="con-form">
                     <vs-row class="form-margin">
                       <vs-col vs-type="flex" w="4" class="label-margin"> Given Name:
@@ -61,37 +96,7 @@
                         <vs-input border v-model="address" placeholder="Enter address" />
                       </vs-col>
                     </vs-row>
-
-                    <vs-row class="form-margin">
-                      <vs-col class="label-margin"> State:</vs-col>
-                      <vs-radio v-model="state_flg" val="0">
-                        Working
-                      </vs-radio>
-                      <vs-radio disabled v-model="state_flg" val="1" v-if="!user_id">
-                        Rejected
-                      </vs-radio>
-                      <vs-radio v-model="state_flg" val="1" v-if="user_id">
-                        Rejected
-                      </vs-radio>
-
-                    </vs-row>
-
-                    <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="6" class="label-margin"> Work from:</vs-col>
-                      <vs-col vs-type="flex" w="8">
-                        <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'" required></VueCtkDateTimePicker>
-                      </vs-col>
-                    </vs-row>
-
-                    <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="6" class="label-margin"> Reject from:</vs-col>
-                      <vs-col vs-type="flex" w="8">
-                        <VueCtkDateTimePicker disabled v-model="end_work_date" v-if="!user_id"></VueCtkDateTimePicker>
-                        <VueCtkDateTimePicker v-model="end_work_date" v-if="user_id" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'"></VueCtkDateTimePicker>
-                      </vs-col>
-                    </vs-row>
                   </div>
-
                   <template #footer>
                     <div class="footer-dialog">
                       <vs-button v-on:click="onSave(user_id)" block v-if="!user_id">
@@ -109,23 +114,23 @@
                   </template>
                   <template #thead>
                     <vs-tr>
-                      <vs-th sort @click="listSave = $vs.sortData($event ,listSave, 'given_name')">Full Name</vs-th>
-                      <vs-th sort @click="listSave = $vs.sortData($event ,listSave, 'email')">Email</vs-th>
+                      <vs-th style="width: 200px" sort @click="listSave = $vs.sortData($event ,listSave, 'mst_company_id')">Company Name</vs-th>
+                      <vs-th >Admin</vs-th>
+                      <vs-th >Admin Email</vs-th>
                       <vs-th >Phone Number</vs-th>
                       <vs-th >Address</vs-th>
-                      <vs-th sort @click="listSave = $vs.sortData($event ,listSave, 'start_work_date')">Work From</vs-th>
-                      <vs-th >Reject From</vs-th>
-                      <vs-th class="center">Edit Account</vs-th>
+                      <vs-th >Open From</vs-th>
+                      <vs-th class="center">Edit Company</vs-th>
                     </vs-tr>
                   </template>
                   <template #tbody>
-                    <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), page, max)"  :data="tr">
+                    <vs-tr :key="i" v-for="(tr, i) in $vs.getPage($vs.getSearch(listSave, search), page, max)"  :data="tr"  >
+                      <vs-td>{{ tr.company_name}}</vs-td>
                       <vs-td>{{ tr.given_name }} {{tr.family_name}}</vs-td>
-                      <vs-td>{{ tr.email }}</vs-td>
+                      <vs-td>{{ tr.admin_email }}</vs-td>
                       <vs-td>{{ tr.phone_number }}</vs-td>
                       <vs-td>{{ tr.address }}</vs-td>
-                      <vs-td>{{ tr.start_work_date }}</vs-td>
-                      <vs-td>{{ tr.end_work_date }}</vs-td>
+                      <vs-td>{{ tr.create_at }}</vs-td>
                       <vs-td  @click="onEdit(tr)">
                         <vs-button >
                           <i class="fa fa-pencil" aria-hidden="true"></i> Edit
@@ -150,7 +155,7 @@ import Axios from 'axios'
 import '@babel/polyfill'
 import { required, minLength, email, numeric } from 'vuelidate/lib/validators'
 export default  {
-  name: 'Tables',
+  name: 'Company',
   props: [],
   data() {
     return {
@@ -163,7 +168,7 @@ export default  {
       // userDetail: [],
       active: false,
       //create
-      mst_company_id: localStorage.getItem('mst_company_id'),
+      mst_company_id: 1,
       family_name: '',
       given_name:'',
       email: '',
@@ -175,14 +180,12 @@ export default  {
       end_work_date: '',
       user_flg: 1,
       userIdDialog: '',
-      user_id: '',
-      create_user: localStorage.getItem('User'),
+      user_id: ''
     }
   },
   methods: {
-    async getListCus(create_user) {
-      console.log(create_user);
-      this.listSave = await Axios.get(`http://localhost:8000/api/userByAdmin/${create_user}`)
+    async getListCus() {
+      this.listSave = await Axios.get(`http://localhost:8000/api/company/`)
           .then(response => {
             return Promise.resolve(response.data);
           })
@@ -191,11 +194,10 @@ export default  {
             const message = (error && error.data && error.data.message) || error.statusText;
             return Promise.reject(message);
           });
-      console.log(this.listSave);
     },
     onCreateUser(){
       this.active = true;
-      this.mst_company_id = localStorage.getItem('mst_company_id');
+      this.mst_company_id = 1;
       this.family_name = '';
       this.given_name = '';
       this.email = '';
@@ -327,7 +329,7 @@ export default  {
         }
       }
       this.active = false;
-      await this.getListCus(this.create_user);
+      await this.getListCus();
     },
 
   },
@@ -335,7 +337,7 @@ export default  {
 
   },
   mounted() {
-    this.getListCus(this.create_user);
+    this.getListCus();
   },
   validations: {
     email: {
@@ -350,23 +352,27 @@ export default  {
 </script>
 
 <style scoped>
-  .form-margin{
-    margin: 0px 0px 10px 20px;
-  }
-  .label-margin{
-    margin-bottom: 10px;
-  }
-  .home{
-    margin-left: 60px;
-  }
-  .error{
-    color: red;
-    animation-name: shakeError;
-    animation-fill-mode: forwards;
-    animation-duration: .6s;
-    animation-timing-function: ease-in-out;
-  }
-  h4{
-    padding-top: 8px;
-  }
+.form-margin{
+  margin: 0px 0px 10px 20px;
+}
+.label-margin{
+  margin-bottom: 10px;
+}
+.home{
+  margin-left: 60px;
+}
+.error{
+  color: red;
+  animation-name: shakeError;
+  animation-fill-mode: forwards;
+  animation-duration: .6s;
+  animation-timing-function: ease-in-out;
+}
+h4{
+  padding-top: 8px;
+}
+.createAdmin{
+  text-align: center;
+  padding: 10px 16px;
+}
 </style>

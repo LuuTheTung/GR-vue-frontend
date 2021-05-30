@@ -73,6 +73,7 @@ export default  {
       if(this.listSave){
         localStorage.setItem('User', this.listSave.email);
         localStorage.setItem('role', this.listSave.user_flg);
+        localStorage.setItem('mst_company_id', this.listSave.mst_company_id);
         await this.$router.push('/dashboard');
         this.$vs.notification({
           title:'Login success',

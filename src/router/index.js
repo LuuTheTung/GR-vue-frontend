@@ -16,6 +16,7 @@ const Category = () => import('@/views/base/category')
 const Catalog = () => import('@/views/base/Catalog')
 const Bill = () => import('@/views/base/Bill')
 const GuestInvoice = () => import('@/views/base/GuestInvoice')
+const Company = () => import('@/views/base/Company')
 // Views - Pages
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
@@ -78,6 +79,11 @@ function configRoutes () {
           path: 'forms',
           name: 'Forms',
           component: Forms
+        },
+        {
+          path: 'company',
+          name: 'Company',
+          component: Company
         },
       ]
     },

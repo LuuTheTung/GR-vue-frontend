@@ -56,13 +56,14 @@
                   </vs-table>
                   <div class="con-form">
                     <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="12" class="label-margin"> Total price: {{ this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}
+                      <vs-col vs-type="flex" w="12" class="label-margin">
+                        Total price: {{ this.total_price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'}) }}
                       </vs-col>
                     </vs-row>
                   </div>
                   <div class="con-form" v-if="!user_id">
                     <vs-row class="form-margin">
-                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12"> Category Name:
+                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="4"> Category Name:
                         <vs-select filter v-model="category_name"  @change="onChange(category_name)">
                           <vs-option :key="index"
                                      :value="item.category_name"
@@ -73,23 +74,22 @@
                           </vs-option>
                         </vs-select>
                       </vs-col>
-                    </vs-row>
-
-                    <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="12" class="label-margin"> Price:
-                        <vs-input v-model="price" placeholder="Enter price" />
+                      <vs-col vs-type="flex" w="4" class="label-margin"> Price:
+                        <vs-input v-model="price" disabled />
                       </vs-col>
-                    </vs-row>
-
-                    <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="12" class="label-margin"> Quantity:
+                      <vs-col vs-type="flex" w="4" class="label-margin"> Quantity:
                         <vs-input type="number" v-model="quantity"/>
                       </vs-col>
                     </vs-row>
 
-                    <vs-button v-on:click="addToList()" v-if="!user_id">
-                      Add to list
-                    </vs-button>
+                    <vs-row class="form-margin">
+                      <vs-col vs-type="flex" w="12" class="label-margin">
+                        <vs-button v-on:click="addToList()" v-if="!user_id">
+                          Add to list
+                        </vs-button>
+                      </vs-col>
+                    </vs-row>
+
                   </div>
                   <vs-row v-if="user_id">
                     <downloadExcel
@@ -345,7 +345,7 @@ export default  {
     margin: 0px 0px 10px 20px;
   }
   .label-margin{
-    margin-bottom: 10px;
+    padding-top: 10px;
   }
   .home{
     margin-left: 60px;
