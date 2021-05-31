@@ -201,7 +201,6 @@ export default  {
       this.email = '';
       this.password = '';
       this.phone_number = '';
-      this.family_name = '';
       this.address = '';
       this.state_flg = 0;
       this.start_work_date = '';

@@ -113,7 +113,7 @@
                 </vs-dialog>
                 <vs-table>
                   <template #header>
-                    <vs-input v-model="search" border placeholder="Search"/>
+                    <vs-input v-model="search" class="vs-input-parent vs-input-parent--state-null vs-input-parent--border block vs-component--primary" border placeholder="Search"/>
                   </template>
                   <template #thead>
                     <vs-tr>
@@ -252,6 +252,8 @@ export default  {
             quantity: this.quantity,
             category_id: this.category_id,
             create_user: this.create_user,
+            mst_company_id: localStorage.getItem('mst_company_id'),
+            user_id: localStorage.getItem('user_id'),
           });
           this.total_price = parseFloat(this.price)*this.quantity + this.total_price;
         }
@@ -263,6 +265,8 @@ export default  {
           quantity: this.quantity,
           category_id: this.category_id,
           create_user: this.create_user,
+          mst_company_id: localStorage.getItem('mst_company_id'),
+          user_id: localStorage.getItem('user_id'),
         });
         this.total_price = parseFloat(this.price) * parseFloat(this.quantity);
       }
@@ -367,5 +371,8 @@ export default  {
   }
   h4{
     padding-top: 8px;
+  }
+  .vs-input-parent.block, .vs-input-parent.block .vs-input {
+    width: 100%;
   }
 </style>

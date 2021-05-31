@@ -13,7 +13,7 @@
                   <p></p>
                   <vs-row class="form-margin">
                     <vs-col vs-type="flex" w="6" class="label-margin">
-                      <vs-input color="#7d33ff" border v-model="username" placeholder="Username">
+                      <vs-input class="vs-input-parent vs-input-parent--state-null vs-input-parent--border block vs-component--primary" color="#7d33ff" border v-model="username" placeholder="Username">
                         <template #icon>
                           <i class="fa fa-user" aria-hidden="true"></i>
                         </template>
@@ -22,7 +22,7 @@
                   </vs-row>
                   <vs-row class="form-margin">
                     <vs-col vs-type="flex" w="6" class="label-margin">
-                      <vs-input color="#7d33ff" border type="password" v-model="password" placeholder="Password">
+                      <vs-input class="vs-input-parent vs-input-parent--state-null vs-input-parent--border block vs-component--primary" color="#7d33ff" border type="password" v-model="password" placeholder="Password">
                         <template #icon>
                           <i class="fa fa-unlock-alt" aria-hidden="true"></i>
                         </template>
@@ -78,26 +78,23 @@ export default  {
         localStorage.setItem('User', this.listSave.email);
         localStorage.setItem('role', this.listSave.user_flg);
         localStorage.setItem('mst_company_id', this.listSave.mst_company_id);
+        localStorage.setItem('user_id', this.listSave.id);
         await this.$router.push('/dashboard');
         this.$vs.notification({
           title:'Login success',
           progress: 'auto',
           color:'success',
-
         });
       }
       else {
         this.$vs.notification({
           title:'Login false',
           text:'Username or password invalid!',
-
           color:'danger',
           progress: 'auto',
         })
       }
-
     },
-
   },
   computed: {
 
@@ -111,5 +108,8 @@ export default  {
 }
 .right-content{
   margin-top: 305px;
+}
+.vs-input-parent.block, .vs-input-parent.block .vs-input {
+  width: 100%;
 }
 </style>

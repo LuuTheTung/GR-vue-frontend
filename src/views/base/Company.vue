@@ -35,14 +35,14 @@
                     </vs-row>
 
                     <vs-row class="form-margin">
-                      <vs-col vs-type="flex" w="4" class="label-margin" :class="{ 'error': $v.phone_number.$error }"> Phone number:
-                        <vs-input border v-model="$v.phone_number.$model" placeholder="Enter phone number" />
-                        <div v-if="!$v.phone_number.numeric">Phone number invalid</div>
+                      <vs-col vs-type="flex" w="4" class="label-margin" :class="{ 'error': $v.phone_number_company.$error }"> Phone number:
+                        <vs-input border v-model="$v.phone_number_company.$model" placeholder="Enter phone number" />
+                        <div v-if="!$v.phone_number_company.numeric">Phone number invalid</div>
                       </vs-col>
                       <vs-col vs-type="flex" w="2" class="label-margin">
                       </vs-col>
                       <vs-col vs-type="flex" w="4" class="label-margin"> Address:
-                        <vs-input border v-model="address" placeholder="Enter address" />
+                        <vs-input border v-model="company_address" placeholder="Enter address" />
                       </vs-col>
 
                     </vs-row>
@@ -50,7 +50,7 @@
                     <vs-row class="form-margin">
                       <vs-col vs-type="flex" w="6" class="label-margin"> Open from:</vs-col>
                       <vs-col vs-type="flex" w="10">
-                        <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY'" :format="'MM/DD/YYYY'" required></VueCtkDateTimePicker>
+                        <VueCtkDateTimePicker id="start_work_date" v-model="start_work_date" :outputFormat="'YYYY-MM-DD HH:mm:ss'" :formatted="'MM/DD/YYYY HH:mm'" :format="'MM/DD/YYYY HH:mm'" required></VueCtkDateTimePicker>
                       </vs-col>
                     </vs-row>
                   </div>
@@ -167,8 +167,8 @@ export default  {
       search: '',
       // userDetail: [],
       active: false,
-      //create
-      mst_company_id: 1,
+      user_id: '',
+      //create admin
       family_name: '',
       given_name:'',
       email: '',
@@ -176,11 +176,13 @@ export default  {
       phone_number: '',
       address: '',
       state_flg: 0,
+      user_flg: 0,
+      create_user: localStorage.getItem('User'),
+      //company
+      company_name: '',
+      phone_number_company: '',
+      company_address:'',
       start_work_date: '',
-      end_work_date: '',
-      user_flg: 1,
-      userIdDialog: '',
-      user_id: ''
     }
   },
   methods: {
@@ -197,50 +199,46 @@ export default  {
     },
     onCreateUser(){
       this.active = true;
-      this.mst_company_id = 1;
+      //admin
       this.family_name = '';
       this.given_name = '';
       this.email = '';
       this.password = '';
       this.phone_number = '';
-      this.family_name = '';
       this.address = '';
-      this.state_flg = 0;
-      this.start_work_date = '';
-      this.end_work_date = '';
-      this.user_flg = 1;
+
     },
     async onEdit(tr) {
       this.active = true;
       if (tr.id){
         this.user_id = tr.id ;
-        let userDetail = await Axios.get(`http://localhost:8000/api/customers/${tr.id}`)
-            .then(response => {
-              return Promise.resolve(response.data);
-            })
-            .catch(error => {
-              error = error.response;
-              const message = (error && error.data && error.data.message) || error.statusText;
-              return Promise.reject(message);
-            });
-        this.mst_company_id = userDetail['mst_company_id'];
-        this.family_name = userDetail['family_name'];
-        this.given_name = userDetail['given_name'];
-        this.email = userDetail['email'];
-        this.password = userDetail['password'];
-        this.phone_number = userDetail['phone_number'];
-        this.family_name = userDetail['family_name'];
-        this.address = userDetail['address'];
-        this.state_flg = userDetail['state_flg'];
-        this.start_work_date = userDetail['start_work_date'];
-        this.end_work_date = userDetail['end_work_date'];
-        this.user_flg = userDetail['user_flg'];
+        // let userDetail = await Axios.get(`http://localhost:8000/api/customers/${tr.id}`)
+        //     .then(response => {
+        //       return Promise.resolve(response.data);
+        //     })
+        //     .catch(error => {
+        //       error = error.response;
+        //       const message = (error && error.data && error.data.message) || error.statusText;
+        //       return Promise.reject(message);
+        //     });
+        // this.mst_company_id = userDetail['mst_company_id'];
+        // this.family_name = userDetail['family_name'];
+        // this.given_name = userDetail['given_name'];
+        // this.email = userDetail['email'];
+        // this.password = userDetail['password'];
+        // this.phone_number = userDetail['phone_number'];
+        // this.family_name = userDetail['family_name'];
+        // this.address = userDetail['address'];
+        // this.state_flg = userDetail['state_flg'];
+        // this.start_work_date = userDetail['start_work_date'];
+        // this.end_work_date = userDetail['end_work_date'];
+        // this.user_flg = userDetail['user_flg'];
       }
     },
     async onSave(id){
 
       let data = {
-        mst_company_id: this.mst_company_id,
+        //admin
         family_name : this.family_name,
         given_name : this.given_name,
         email : this.email,
@@ -248,10 +246,13 @@ export default  {
         phone_number: this.phone_number,
         address: this.address,
         state_flg: this.state_flg,
-        start_work_date: this.start_work_date,
-        end_work_date: this.end_work_date,
         user_flg: this.user_flg,
-        create_user: localStorage.getItem('User')
+        create_user: localStorage.getItem('User'),
+        //company
+        company_name: this.company_name,
+        company_address: this.company_address,
+        start_work_date: this.start_work_date,
+        phone_number_company: this.phone_number_company,
       }
       if (id){
         data.id = id;
@@ -292,7 +293,7 @@ export default  {
         }
       }
       else {
-        this.createStatus = await Axios.post(`http://localhost:8000/api/customers`, data)
+        this.createStatus = await Axios.post(`http://localhost:8000/api/company`, data)
             .then(response => {
               return Promise.resolve(response.status);
             })
@@ -345,6 +346,9 @@ export default  {
       required
     },
     phone_number: {
+      numeric
+    },
+    phone_number_company:{
       numeric
     }
   }
