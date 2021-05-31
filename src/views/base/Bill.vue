@@ -311,7 +311,22 @@ export default  {
             const message = (error && error.data && error.data.message) || error.statusText;
             return Promise.reject(message);
           });
-
+      if (this.createStatus == 200){
+        this.$vs.notification({
+          title:'Create Invoice Success',
+          progress: 'auto',
+          color:'success',
+          square: true,
+        });
+      }
+      else {
+        this.$vs.notification({
+          title:'Create Invoice False',
+          square: true,
+          color:'danger',
+          progress: 'auto',
+        })
+      }
       this.active = false;
       await this.getListCus(this.create_user);
     },

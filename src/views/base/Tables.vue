@@ -263,26 +263,17 @@ export default  {
               return Promise.reject(message);
             });
         if (this.updateStatus == 200){
-          if (this.user_flg == 0){
-            this.$vs.notification({
-              title:'Update Admin success',
-              progress: 'auto',
-              color:'success',
-              square: true,
-            });
-          }
-          else {
             this.$vs.notification({
               title:'Update User Success',
               progress: 'auto',
               color:'success',
               square: true,
             });
-          }
+
         }
         else {
           this.$vs.notification({
-            title:'Update User/Admin False',
+            title:'Update User False',
             square: true,
             color:'danger',
             progress: 'auto',
@@ -300,26 +291,16 @@ export default  {
               return Promise.reject(message);
             });
         if (this.createStatus == 200){
-          if (this.user_flg == 0){
-            this.$vs.notification({
-              title:'Create Admin success',
-              progress: 'auto',
-              color:'success',
-              square: true,
-            });
-          }
-          else {
             this.$vs.notification({
               title:'Create User Success',
               progress: 'auto',
               color:'success',
               square: true,
             });
-          }
         }
         else {
           this.$vs.notification({
-            title:'Create User/Admin False',
+            title:'Create User False',
             square: true,
             color:'danger',
             progress: 'auto',

@@ -10,22 +10,27 @@
               <CCardBody>
                 <CForm>
                   <h1>DIBO CAKE</h1>
-                  <p class="text-muted">Sign In to your account</p>
-                  <CInput
-                    placeholder="Username"
-                    v-model="username"
-                  >
-                    <template #prepend-content><CIcon name="cil-user"/></template>
-                  </CInput>
-                  <CInput
-                    placeholder="Password"
-                    type="password"
-                    v-model="password"
-                  >
-                    <template #prepend-content><CIcon name="cil-lock-locked"/></template>
-                  </CInput>
+                  <p></p>
+                  <vs-row class="form-margin">
+                    <vs-col vs-type="flex" w="6" class="label-margin">
+                      <vs-input color="#7d33ff" border v-model="username" placeholder="Username">
+                        <template #icon>
+                          <i class="fa fa-user" aria-hidden="true"></i>
+                        </template>
+                      </vs-input>
+                    </vs-col>
+                  </vs-row>
+                  <vs-row class="form-margin">
+                    <vs-col vs-type="flex" w="6" class="label-margin">
+                      <vs-input color="#7d33ff" border type="password" v-model="password" placeholder="Password">
+                        <template #icon>
+                          <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                        </template>
+                      </vs-input>
+                    </vs-col>
+                  </vs-row>
                   <CRow>
-                    <CCol >
+                    <CCol style="padding-top: 10px">
                       <vs-button v-on:click="login()" color="primary" type="filled"> Login</vs-button>
                     </CCol>
                   </CRow>
@@ -69,7 +74,6 @@ export default  {
             const message = (error && error.data && error.data.message) || error.statusText;
             return Promise.reject(message);
           });
-      console.log(this.listSave)
       if(this.listSave){
         localStorage.setItem('User', this.listSave.email);
         localStorage.setItem('role', this.listSave.user_flg);
@@ -79,14 +83,14 @@ export default  {
           title:'Login success',
           progress: 'auto',
           color:'success',
-          square: true,
+
         });
       }
       else {
         this.$vs.notification({
           title:'Login false',
           text:'Username or password invalid!',
-          square: true,
+
           color:'danger',
           progress: 'auto',
         })
