@@ -24,7 +24,7 @@
                       Create <b>Company</b>
                     </h4>
                     <h4 class="not-margin" v-if="user_id">
-                      Edit <b>Company</b>
+                      <b>Company Info</b>
                     </h4>
                   </template>
                   <div class="con-form">
@@ -59,7 +59,7 @@
                       Create <b>Admin</b>
                     </h4>
                     <h4 class="not-margin" v-if="user_id">
-                      Edit <b>Admin</b>
+                      <b>Admin Info</b>
                     </h4>
                   </div>
                   <div class="con-form">
@@ -101,9 +101,6 @@
                     <div class="footer-dialog">
                       <vs-button v-on:click="onSave(user_id)" block v-if="!user_id">
                         Create
-                      </vs-button>
-                      <vs-button v-on:click="onSave(user_id)" block v-if="user_id">
-                        Update
                       </vs-button>
                     </div>
                   </template>
@@ -199,6 +196,7 @@ export default  {
     },
     onCreateUser(){
       this.active = true;
+      this.user_id = '';
       //admin
       this.family_name = '';
       this.given_name = '';
@@ -206,33 +204,37 @@ export default  {
       this.password = '';
       this.phone_number = '';
       this.address = '';
-
+      //company
+      this.company_name = '';
+      this.phone_number_company = '';
+      this.company_address ='';
+      this.start_work_date = '';
     },
     async onEdit(tr) {
       this.active = true;
       if (tr.id){
         this.user_id = tr.id ;
-        // let userDetail = await Axios.get(`http://localhost:8000/api/customers/${tr.id}`)
-        //     .then(response => {
-        //       return Promise.resolve(response.data);
-        //     })
-        //     .catch(error => {
-        //       error = error.response;
-        //       const message = (error && error.data && error.data.message) || error.statusText;
-        //       return Promise.reject(message);
-        //     });
-        // this.mst_company_id = userDetail['mst_company_id'];
-        // this.family_name = userDetail['family_name'];
-        // this.given_name = userDetail['given_name'];
-        // this.email = userDetail['email'];
-        // this.password = userDetail['password'];
-        // this.phone_number = userDetail['phone_number'];
-        // this.family_name = userDetail['family_name'];
-        // this.address = userDetail['address'];
-        // this.state_flg = userDetail['state_flg'];
-        // this.start_work_date = userDetail['start_work_date'];
-        // this.end_work_date = userDetail['end_work_date'];
-        // this.user_flg = userDetail['user_flg'];
+        let companyDetail = await Axios.get(`http://localhost:8000/api/company/${tr.id}`)
+            .then(response => {
+              return Promise.resolve(response.data);
+            })
+            .catch(error => {
+              error = error.response;
+              const message = (error && error.data && error.data.message) || error.statusText;
+              return Promise.reject(message);
+            });
+        console.log(companyDetail)
+        //admin
+        this.family_name = companyDetail['family_name'];
+        this.given_name = companyDetail['given_name'];
+        this.email = companyDetail['admin_email'];
+        this.phone_number = companyDetail['admin_phone_number'];
+        this.address = companyDetail['admin_address'];
+        //company
+        this.company_name = companyDetail['company_name'];
+        this.phone_number_company = companyDetail['phone_number'];
+        this.company_address = companyDetail['address'];
+        this.start_work_date = companyDetail['create_at'];
       }
     },
     async onSave(id){

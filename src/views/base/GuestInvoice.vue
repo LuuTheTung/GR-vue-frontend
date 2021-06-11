@@ -87,7 +87,7 @@
                           Delete Image
                         </vs-button>
                         <vs-button >
-                          Purchase
+                          Save Invoice
                         </vs-button>
                       </vs-col>
                     </vs-row>

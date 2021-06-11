@@ -84,6 +84,7 @@ export default  {
           title:'Login success',
           progress: 'auto',
           color:'success',
+          square: true,
         });
       }
       else {
@@ -92,6 +93,7 @@ export default  {
           text:'Username or password invalid!',
           color:'danger',
           progress: 'auto',
+          square: true,
         })
       }
     },

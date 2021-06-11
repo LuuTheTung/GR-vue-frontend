@@ -195,6 +195,7 @@ export default  {
     },
     onCreateUser(){
       this.active = true;
+      this.user_id = '';
       this.mst_company_id = localStorage.getItem('mst_company_id');
       this.family_name = '';
       this.given_name = '';
@@ -254,21 +255,18 @@ export default  {
         data.id = id;
         this.updateStatus = await Axios.put(`http://localhost:8000/api/customers/${data.id}`, data)
             .then(response => {
-              return Promise.resolve(response.status);
+              this.messageRes = response.data.message;
+              return Promise.resolve(response.data.status);
             })
-            .catch(error => {
-              error = error.response;
-              const message = (error && error.data && error.data.message) || error.statusText;
-              return Promise.reject(message);
-            });
-        if (this.updateStatus == 200){
+        if (this.updateStatus == true){
             this.$vs.notification({
               title:'Update User Success',
               progress: 'auto',
               color:'success',
               square: true,
             });
-
+          this.active = false;
+          await this.getListCus(this.create_user);
         }
         else {
           this.$vs.notification({
@@ -276,38 +274,39 @@ export default  {
             square: true,
             color:'danger',
             progress: 'auto',
+            text: this.messageRes,
           })
         }
       }
       else {
         this.createStatus = await Axios.post(`http://localhost:8000/api/customers`, data)
             .then(response => {
-              return Promise.resolve(response.status);
+              this.messageRes = response.data.message;
+              return Promise.resolve(response.data.status);
             })
-            .catch(error => {
-              error = error.response;
-              const message = (error && error.data && error.data.message) || error.statusText;
-              return Promise.reject(message);
-            });
-        if (this.createStatus == 200){
+          if (this.createStatus == true){
+              this.$vs.notification({
+                title:'Create User Success',
+                progress: 'auto',
+                color:'success',
+                square: true,
+              });
+            this.active = false;
+            await this.getListCus(this.create_user);
+          }
+          else {
             this.$vs.notification({
-              title:'Create User Success',
-              progress: 'auto',
-              color:'success',
+              title:'Create User False',
               square: true,
-            });
+              color:'danger',
+              progress: 'auto',
+              text: this.messageRes,
+            })
+          }
         }
-        else {
-          this.$vs.notification({
-            title:'Create User False',
-            square: true,
-            color:'danger',
-            progress: 'auto',
-          })
-        }
-      }
-      this.active = false;
-      await this.getListCus(this.create_user);
+
+
+
     },
 
   },

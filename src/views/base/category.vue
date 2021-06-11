@@ -211,6 +211,7 @@ export default  {
         this.price = categoryDetail['price'];
         this.sale_off = categoryDetail['sale_off'];
         this.image_dir = categoryDetail['src'];
+        this.image = '';
       }
     },
 
@@ -228,20 +229,19 @@ export default  {
         data.id = id;
         this.updateStatus = await Axios.put(`http://localhost:8000/api/category/${data.id}`, data)
             .then(response => {
-              return Promise.resolve(response.status);
-            })
-            .catch(error => {
-              error = error.response;
-              const message = (error && error.data && error.data.message) ;
-              return Promise.reject(message);
+              this.messageRes = response.data.message;
+              return Promise.resolve(response.data.status);
             });
-        if (this.updateStatus == 200){
+
+        if (this.updateStatus == true){
           this.$vs.notification({
             title:'Update category success',
             progress: 'auto',
             color:'success',
             square: true,
           });
+          this.active = false;
+          await this.getListCategory();
         }
         else {
           this.$vs.notification({
@@ -249,26 +249,26 @@ export default  {
             square: true,
             color:'danger',
             progress: 'auto',
+            text: this.messageRes,
           })
         }
       }
       else{
          this.createStatus = await Axios.post(`http://localhost:8000/api/category`, data)
             .then(response => {
-              return Promise.resolve(response.status);
-            })
-            .catch(error => {
-              error = error.response;
-              const message = (error && error.data && error.data.message);
-              return Promise.reject(message);
+              this.messageRes = response.data.message;
+              return Promise.resolve(response.data.status);
             });
-         if (this.createStatus == 200){
+
+         if (this.createStatus == true){
            this.$vs.notification({
              title:'Create category success',
              progress: 'auto',
              color:'success',
              square: true,
            });
+           this.active = false;
+           await this.getListCategory();
          }
          else {
            this.$vs.notification({
@@ -276,12 +276,10 @@ export default  {
              square: true,
              color:'danger',
              progress: 'auto',
+             text: this.messageRes,
            })
          }
       }
-
-      this.active = false;
-      await this.getListCategory();
     },
   },
   computed: {
