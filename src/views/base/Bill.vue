@@ -102,6 +102,9 @@
                     >
                       Export Invoice
                     </downloadExcel>
+                    <vs-button v-on:click="purchaseQR()">
+                      Purchase
+                    </vs-button>
                   </vs-row>
                   <template #footer>
                     <div class="footer-dialog">
@@ -344,6 +347,9 @@ export default  {
       var id = this.user_id ;
       const response = await Axios.get(`http://localhost:8000/api/invoice/${id}`);
       return response.data;
+    },
+    purchaseQR(){
+      window.open("http://localhost:5000/", '_blank');
     },
   },
   computed: {

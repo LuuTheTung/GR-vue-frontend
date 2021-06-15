@@ -1,186 +1,223 @@
 <template>
-  <div>
-    <WidgetsDropdown/>
-    <CCard>
-      <CCardBody>
-        <CRow>
-          <CCol sm="5">
-            <h4 id="traffic" class="card-title mb-0">Traffic</h4>
-            <div class="small text-muted">November 2017</div>
-          </CCol>
-          <CCol sm="7" class="d-none d-md-block">
-            <CButton color="primary" class="float-right">
-              <CIcon name="cil-cloud-download"/>
-            </CButton>
-            <CButtonGroup class="float-right mr-3">
-              <CButton
-                color="outline-secondary"
-                v-for="(value, key) in ['Day', 'Month', 'Year']"
-                :key="key"
-                class="mx-0"
-                :pressed="value === selected ? true : false"
-                @click="selected = value"
-              >
-                {{value}}
-              </CButton>
-            </CButtonGroup>
-          </CCol>
-        </CRow>
-        <MainChartExample style="height:300px;margin-top:40px;"/>
-      </CCardBody>
-      <CCardFooter>
-        <CRow class="text-center">
-          <CCol md sm="12" class="mb-sm-2 mb-0">
-            <div class="text-muted">Visits</div>
-            <strong>29.703 Users (40%)</strong>
-            <CProgress
-              class="progress-xs mt-2"
-              :precision="1"
-              color="success"
-              :value="40"
-            />
-          </CCol>
-          <CCol md sm="12" class="mb-sm-2 mb-0 d-md-down-none">
-            <div class="text-muted">Unique</div>
-            <strong>24.093 Users (20%)</strong>
-            <CProgress
-              class="progress-xs mt-2"
-              :precision="1"
-              color="info"
-              :value="20"
-            />
-          </CCol>
-          <CCol md sm="12" class="mb-sm-2 mb-0">
-            <div class="text-muted">Pageviews</div>
-            <strong>78.706 Views (60%)</strong>
-            <CProgress
-              class="progress-xs mt-2"
-              :precision="1"
-              color="warning"
-              :value="60"
-            />
-          </CCol>
-          <CCol md sm="12" class="mb-sm-2 mb-0">
-            <div class="text-muted">New Users</div>
-            <strong>22.123 Users (80%)</strong>
-            <CProgress
-              class="progress-xs mt-2"
-              :precision="1"
-              color="danger"
-              :value="80"
-            />
-          </CCol>
-          <CCol md sm="12" class="mb-sm-2 mb-0 d-md-down-none">
-            <div class="text-muted">Bounce Rate</div>
-            <strong>Average Rate (40.15%)</strong>
-            <CProgress
-              class="progress-xs mt-2"
-              :precision="1"
-              :value="40"
-            />
-          </CCol>
-        </CRow>
-      </CCardFooter>
-    </CCard>
-    <WidgetsBrand/>
+  <section class="home">
+    <div>
+      <CRow>
+        <CCol sm="6">
+          <transition name="fade">
+            <CCard v-if="show">
+              <CCardHeader>
+                <strong>Today Income</strong>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody style="height: 300px">
+                  <vs-row class="form-margin" >
+                    <vs-col vs-type="flex" w="6" style="text-align: center; padding-top: 50px;">
+                      <h4>{{this.listSave.total_invoice == null ? this.listSave.total_invoice = 0: this.listSave.total_invoice}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">
+                      <h4>{{this.listSave.income == null ? this.listSave.income = 0: this.listSave.income.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">Invoice Created</vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">Total Income</vs-col>
+                  </vs-row>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+          </transition>
+        </CCol>
+        <CCol sm="6">
+          <transition name="fade">
+            <CCard v-if="show">
+              <CCardHeader>
+                <strong>Current Month Income</strong>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody style="height: 300px">
+                  <vs-row class="form-margin">
+                    <vs-col vs-type="flex" w="6" class="text-css">
+                      <h4>{{this.monthIncome.totalInvoice == null ? this.monthIncome.totalInvoice = 0: this.monthIncome.totalInvoice}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">
+                      <h4>{{this.monthIncome.totalIncome == null ? this.monthIncome.totalIncome = 0: parseInt(this.monthIncome.totalIncome).toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css"> Invoice Created
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css"> Total Income
+                    </vs-col>
+                  </vs-row>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+          </transition>
+        </CCol>
+        <CCol sm="12" v-if="this.role == 0">
+          <transition name="fade">
+            <CCard v-if="show">
+              <CCardHeader>
+                <strong>User Income</strong>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody>
+                  <vs-row class="form-margin" >
+                    <vs-col vs-type="flex" w="2"> Select User:
+                    </vs-col>
+                    <vs-col vs-type="flex" w="9" class="label-margin">
+                      <vs-select :key="listUser.length" v-model="email"  @change="onChange(email)">
+                        <vs-option
+                            v-for="field in listUser"
+                            :key="field.email"
+                            :label="field.given_name+' '+field.family_name"
+                            :value="field.email"
+                        >
+                          {{ field.given_name }} {{ field.family_name }}
+                        </vs-option>
+                      </vs-select>
+                    </vs-col>
+                  </vs-row>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+          </transition>
+        </CCol>
 
-  </div>
+        <CCol sm="6" v-if="this.role == 0">
+          <transition name="fade">
+            <CCard v-if="show">
+              <CCardHeader>
+                <strong>User Today Income</strong>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody style="height: 300px">
+                  <vs-row class="form-margin" >
+                    <vs-col vs-type="flex" w="6" style="text-align: center; padding-top: 50px;">
+                      <h4>{{this.userDetail.total_invoice == null ? this.userDetail.total_invoice = 0: this.userDetail.total_invoice}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">
+                      <h4>{{this.userDetail.income == null ? this.userDetail.income = 0: this.userDetail.income.toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">Invoice Created</vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">Total Income</vs-col>
+                  </vs-row>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+          </transition>
+        </CCol>
+
+        <CCol sm="6" v-if="this.role == 0">
+          <transition name="fade">
+            <CCard v-if="show">
+              <CCardHeader>
+                <strong>User Current Month Income</strong>
+              </CCardHeader>
+              <CCollapse :show="formCollapsed">
+                <CCardBody style="height: 300px">
+                  <vs-row class="form-margin">
+                    <vs-col vs-type="flex" w="6" class="text-css">
+                      <h4>{{this.monthDetail.totalInvoice == null ? this.monthDetail.totalInvoice = 0: this.monthDetail.totalInvoice}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css">
+                      <h4>{{this.monthDetail.totalIncome == null ? this.monthDetail.totalIncome = 0: parseInt(this.monthDetail.totalIncome).toLocaleString('it-IT', {style : 'currency', currency : 'VND'})}}</h4>
+                    </vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css"> Invoice Created</vs-col>
+                    <vs-col vs-type="flex" w="6" class="text-css"> Total Income</vs-col>
+                  </vs-row>
+                </CCardBody>
+              </CCollapse>
+            </CCard>
+          </transition>
+        </CCol>
+      </CRow>
+    </div>
+  </section>
 </template>
 
 <script>
-import MainChartExample from './charts/MainChartExample'
-import WidgetsDropdown from './widgets/WidgetsDropdown'
-import WidgetsBrand from './widgets/WidgetsBrand'
 
+
+import Axios from "axios";
+import '@babel/polyfill'
 export default {
   name: 'Dashboard',
   components: {
-    MainChartExample,
-    WidgetsDropdown,
-    WidgetsBrand
+
   },
   data () {
     return {
-      selected: 'Month',
-      tableItems: [
-        {
-          avatar: { url: 'img/avatars/1.jpg', status: 'success' },
-          user: { name: 'Yiorgos Avraamu', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'USA', flag: 'cif-us' },
-          usage: { value: 50, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Mastercard', icon: 'cib-cc-mastercard' },
-          activity: '10 sec ago'
-        },
-        {
-          avatar: { url: 'img/avatars/2.jpg', status: 'danger' },
-          user: { name: 'Avram Tarasios', new: false, registered: 'Jan 1, 2015' },
-          country: { name: 'Brazil', flag: 'cif-br' },
-          usage: { value: 22, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Visa', icon: 'cib-cc-visa' },
-          activity: '5 minutes ago'
-        },
-        {
-          avatar: { url: 'img/avatars/3.jpg', status: 'warning' },
-          user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'India', flag: 'cif-in' },
-          usage: { value: 74, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Stripe', icon: 'cib-stripe' },
-          activity: '1 hour ago'
-        },
-        {
-          avatar: { url: 'img/avatars/4.jpg', status: '' },
-          user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'France', flag: 'cif-fr' },
-          usage: { value: 98, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'PayPal', icon: 'cib-paypal' },
-          activity: 'Last month'
-        },
-        {
-          avatar: { url: 'img/avatars/5.jpg', status: 'success' },
-          user: { name: 'Agapetus Tadeáš', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'Spain', flag: 'cif-es' },
-          usage: { value: 22, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Google Wallet', icon: 'cib-google-pay' },
-          activity: 'Last week'
-        },
-        {
-          avatar: { url: 'img/avatars/6.jpg', status: 'danger' },
-          user: { name: 'Friderik Dávid', new: true, registered: 'Jan 1, 2015' },
-          country: { name: 'Poland', flag: 'cif-pl' },
-          usage: { value: 43, period: 'Jun 11, 2015 - Jul 10, 2015' },
-          payment: { name: 'Amex', icon: 'cib-cc-amex' },
-          activity: 'Last week'
-        }
-      ],
-      tableFields: [
-        { key: 'avatar', label: '', _classes: 'text-center' },
-        { key: 'user' },
-        { key: 'country', _classes: 'text-center' },
-        { key: 'usage' },
-        { key: 'payment', label: 'Payment method', _classes: 'text-center' },
-        { key: 'activity' },
-      ]
+      show: true,
+      formCollapsed: true,
+      create_user: localStorage.getItem('User'),
+      listSave: [],
+      monthIncome:[],
+      listUser: [],
+      email: '',
+      userDetail:[],
+      role: localStorage.getItem('role'),
+      monthDetail:[],
     }
   },
   methods: {
-    color (value) {
-      let $color
-      if (value <= 25) {
-        $color = 'info'
-      } else if (value > 25 && value <= 50) {
-        $color = 'success'
-      } else if (value > 50 && value <= 75) {
-        $color = 'warning'
-      } else if (value > 75 && value <= 100) {
-        $color = 'danger'
-      }
-      return $color
-    }
+    async getTodayIncome(create_user) {
+      this.listSave = await Axios.get(`http://localhost:8000/api/incomeStatement/${create_user}`)
+          .then(response => {
+            return Promise.resolve(response.data);
+          });
+    },
+    async getMonthIncome(create_user) {
+      this.monthIncome = await Axios.get(`http://localhost:8000/api/incomeStatementByMonth/${create_user}`)
+          .then(response => {
+            return Promise.resolve(response.data);
+          })
+          .catch(error => {
+            error = error.response;
+            const message = (error && error.data && error.data.message) || error.statusText;
+            return Promise.reject(message);
+          });
+    },
+    async getListUser(create_user) {
+      this.listUser = await Axios.get(`http://localhost:8000/api/userByAdmin/${create_user}`)
+          .then(response => {
+            return Promise.resolve(response.data);
+          })
+          .catch(error => {
+            error = error.response;
+            const message = (error && error.data && error.data.message) || error.statusText;
+            return Promise.reject(message);
+          });
+    },
+    async onChange(name){
+      this.userDetail = await Axios.get(`http://localhost:8000/api/incomeStatement/${name}`)
+          .then(response => {
+            return Promise.resolve(response.data);
+          })
+      this.monthDetail = await Axios.get(`http://localhost:8000/api/incomeStatementByMonth/${name}`)
+          .then(response => {
+            return Promise.resolve(response.data);
+          })
+    },
   },
   mounted() {
     if(!localStorage.getItem('User')){
       this.$router.push('/pages/login');
     }
+    this.getTodayIncome(this.create_user);
+    this.getMonthIncome(this.create_user);
+    this.getListUser(this.create_user);
   }
 }
 </script>
+<style scoped>
+.home{
+  margin-left: 60px;
+}
+img {
+  width: 30%;
+  margin: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+.text-css{
+  text-align: center;
+  padding-top: 50px;
+}
+</style>

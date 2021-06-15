@@ -25,7 +25,7 @@
         <template #icon>
           <i class="fa fa-users" aria-hidden="true"></i>
         </template>
-        <router-link :to="{ path: '/tables' }">Manage Account</router-link>
+        <router-link :to="{ path: '/tables' }">Account</router-link>
       </vs-sidebar-item>
       <vs-sidebar-item id="category" v-if="this.role == 0">
         <template #icon>
@@ -49,7 +49,7 @@
         <template #icon>
           <i class="fa fa-print"></i>
         </template>
-        <router-link :to="{ path: '/guest-invoice' }">Guest Invoice</router-link>
+        <router-link :to="{ path: '/guest-invoice' }">Automatic Invoice</router-link>
       </vs-sidebar-item>
 
       <template #footer>

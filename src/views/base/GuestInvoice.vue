@@ -63,7 +63,7 @@
                       </vs-col>
                       <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="4">
                         Quantity:
-                        <vs-input type="number" v-model="quantity"/>
+                        <vs-input type="number" v-model="quantity" disabled/>
                       </vs-col>
                     </vs-row>
 
@@ -80,13 +80,10 @@
 
                     <vs-row class="form-margin">
                       <vs-col vs-type="flex" w="12" class="label-margin">
-                        <vs-button v-on:click="addToList()" v-if="!user_id">
-                          Add to list
-                        </vs-button>
-                        <vs-button v-on:click="deleteImage()" v-if="!user_id">
+                        <vs-button v-on:click="deleteImage()">
                           Delete Image
                         </vs-button>
-                        <vs-button >
+                        <vs-button v-on:click="onSave()">
                           Save Invoice
                         </vs-button>
                       </vs-col>
@@ -104,13 +101,24 @@
               <CCardHeader>
                 <strong>Payment</strong>
               </CCardHeader>
-              <CCollapse :show="formCollapsed">
+              <CCollapse :show="paymentShow">
                 <CCardBody>
-
-                  <div class="form-actions">
-                    <CButton type="submit" color="primary">Save changes</CButton>
-                    <CButton color="secondary">Cancel</CButton>
-                  </div>
+                  <vs-row class="form-margin">
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="12">
+                      Confirm Invoice
+                    </vs-col>
+                  </vs-row>
+                  <vs-row class="form-margin">
+                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="4">
+                        Invoice ID:  {{this.invoiceDetail.invoice_id}}
+                      </vs-col>
+                      <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="4">
+                        Price:  {{this.invoiceDetail.total_price}}
+                      </vs-col>
+                      <vs-button v-on:click="purchaseQR()">
+                        Purchase
+                      </vs-button>
+                  </vs-row>
                 </CCardBody>
               </CCollapse>
             </CCard>
@@ -132,6 +140,7 @@ name: "GuestInvoice",
     return {
       show: true,
       formCollapsed: true,
+      paymentShow: false,
       pageInvoice: 1,
       page: 1,
       max: 10,
@@ -140,6 +149,7 @@ name: "GuestInvoice",
       userDetail: [],
       listCategory: [],
       array: [],
+      invoiceDetail:[],
       active: false,
       user_id: '',
       //create
@@ -166,6 +176,19 @@ name: "GuestInvoice",
             return Promise.reject(message);
           });
     },
+    async getLastestInvoice() {
+      console.log(this.create_user);
+      this.invoiceDetail = await Axios.get(`http://localhost:8000/api/lastestInvoice/${this.create_user}`)
+          .then(response => {
+            return Promise.resolve(response.data);
+          })
+          .catch(error => {
+            error = error.response;
+            const message = (error && error.data && error.data.message) || error.statusText;
+            return Promise.reject(message);
+          });
+      console.log(this.invoiceDetail);
+    },
     addToList(){
       if (this.userDetail.length > 0){
         var exist = false;
@@ -189,6 +212,7 @@ name: "GuestInvoice",
             quantity: this.quantity,
             category_id: this.category_id,
             create_user: this.create_user,
+            mst_company_id: localStorage.getItem('mst_company_id'),
           });
           this.total_price = parseFloat(this.price)*this.quantity + this.total_price;
           this.image = '';
@@ -203,6 +227,7 @@ name: "GuestInvoice",
             quantity: this.quantity,
             category_id: this.category_id,
             create_user: this.create_user,
+            mst_company_id: localStorage.getItem('mst_company_id'),
           });
           this.total_price = parseFloat(this.price) * parseFloat(this.quantity);
           this.image = '';
@@ -244,9 +269,53 @@ name: "GuestInvoice",
         this.quantity = 1;
         this.category_id = categoryDetail['id'];
         this.category_name = name;
+        this.addToList();
       }
-      else console.log('not detected')
+      else {
+        console.log('not detected');
+        this.$vs.notification({
+          title:'Cake not Detected',
+          square: true,
+          color:'danger',
+          progress: 'auto',
+          position: 'top-center',
+        })
+      }
 
+    },
+    async onSave() {
+      let data = this.userDetail;
+      this.createStatus = await Axios.post(`http://localhost:8000/api/invoice`, data)
+          .then(response => {
+            return Promise.resolve(response.status);
+          })
+          .catch(error => {
+            error = error.response;
+            const message = (error && error.data && error.data.message) || error.statusText;
+            return Promise.reject(message);
+          });
+      if (this.createStatus == 200){
+        this.$vs.notification({
+          title:'Create Invoice Success',
+          progress: 'auto',
+          color:'success',
+          square: true,
+        });
+        this.paymentShow = true;
+        await this.getLastestInvoice();
+      }
+      else {
+        this.$vs.notification({
+          title:'Create Invoice False',
+          square: true,
+          color:'danger',
+          progress: 'auto',
+        })
+      }
+      this.active = false;
+    },
+    purchaseQR(){
+      window.open("http://localhost:5000/", '_blank');
     },
     createImage(file) {
       var reader = new FileReader();
@@ -273,6 +342,7 @@ name: "GuestInvoice",
   },
   mounted() {
     this.getListCategory();
+
   },
 }
 </script>
@@ -286,5 +356,8 @@ img {
   margin: auto;
   display: block;
   margin-bottom: 10px;
+}
+.zoom {
+  width: 80% !important;
 }
 </style>
